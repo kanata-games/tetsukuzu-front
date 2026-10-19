@@ -1,0 +1,324 @@
+{
+ "canvas": [
+  64,
+  64
+ ],
+ "view": "front",
+ "origin": "top-left (px)",
+ "how_to_assemble": "全パーツは組立済みの位置に描いてある。各PNGを(0,0)に layerOrder の順で重ねるだけで組み上がる。L/R は画面上の左右（見る側から見て）。",
+ "anchors": {
+  "neck": [
+   32,
+   22
+  ],
+  "shoulderL": [
+   20,
+   26
+  ],
+  "shoulderR": [
+   44,
+   26
+  ],
+  "waist": [
+   32,
+   44
+  ],
+  "back": [
+   32,
+   28
+  ],
+  "mountL": [
+   20,
+   21
+  ],
+  "mountR": [
+   44,
+   21
+  ],
+  "rotorHub": [
+   32,
+   4
+  ],
+  "bodyCenter": [
+   32,
+   34
+  ]
+ },
+ "anchor_notes": {
+  "neck": "頭の下端中央（頭はy=22付近で胴の襟に重なる）",
+  "shoulderL/R": "腕の肩関節の中心。全胴体が同じ位置にソケットを持つ",
+  "waist": "脚の腰ブロック上端中央（胴の腰はy=45まで、脚はy=43から重なる）",
+  "back": "背中装備の取付基準",
+  "mountL/R": "肩装備の取付基準（肩アーマーの上）",
+  "rotorHub": "背中回転翼のハブ中心"
+ },
+ "layerOrder": [
+  "back",
+  "legs",
+  "body",
+  "arms",
+  "head",
+  "shoulder"
+ ],
+ "slots": {
+  "body": "1つ必須",
+  "head": "1つ必須",
+  "arms": "1つ必須（左右セット1枚）",
+  "legs": "1つ必須",
+  "back": "背中装備 0〜1（taketonbo/homura/mimizuku）",
+  "shoulderL": "左肩装備 0〜1（kamenoko）",
+  "shoulderR": "右肩装備 0〜1（ikazuchi）"
+ },
+ "palette": [
+  "#0e0f14",
+  "#181a21",
+  "#24272f",
+  "#383d48",
+  "#535a68",
+  "#747d8c",
+  "#9ca6b4",
+  "#ccd4dc",
+  "#282d1b",
+  "#424a2a",
+  "#616b3c",
+  "#889456",
+  "#3c1f15",
+  "#6c3520",
+  "#9c562a",
+  "#c68040",
+  "#7c3c0c",
+  "#f09e20",
+  "#ffe28c"
+ ],
+ "parts": [
+  {
+   "id": "body_nagi",
+   "category": "body",
+   "slot": "body",
+   "layer": "body",
+   "name_ja": "標準コア「ナギ」",
+   "name_en": "Standard Core \"Nagi\"",
+   "frames": 1,
+   "files": [
+    "body_nagi.png"
+   ]
+  },
+  {
+   "id": "body_iwao",
+   "category": "body",
+   "slot": "body",
+   "layer": "body",
+   "name_ja": "重装コア「イワオ」",
+   "name_en": "Heavy Core \"Iwao\"",
+   "frames": 1,
+   "files": [
+    "body_iwao.png"
+   ]
+  },
+  {
+   "id": "body_tsubame",
+   "category": "body",
+   "slot": "body",
+   "layer": "body",
+   "name_ja": "軽量コア「ツバメ」",
+   "name_en": "Light Core \"Tsubame\"",
+   "frames": 1,
+   "files": [
+    "body_tsubame.png"
+   ]
+  },
+  {
+   "id": "head_mejiro",
+   "category": "head",
+   "slot": "head",
+   "layer": "head",
+   "name_ja": "索敵ヘッド「メジロ」",
+   "name_en": "Scout Head \"Mejiro\"",
+   "frames": 1,
+   "files": [
+    "head_mejiro.png"
+   ]
+  },
+  {
+   "id": "head_hitomi",
+   "category": "head",
+   "slot": "head",
+   "layer": "head",
+   "name_ja": "単眼ヘッド「ヒトミ」",
+   "name_en": "Mono-eye Head \"Hitomi\"",
+   "frames": 1,
+   "files": [
+    "head_hitomi.png"
+   ]
+  },
+  {
+   "id": "head_onibi",
+   "category": "head",
+   "slot": "head",
+   "layer": "head",
+   "name_ja": "角付ヘッド「オニビ」",
+   "name_en": "Horned Head \"Onibi\"",
+   "frames": 1,
+   "files": [
+    "head_onibi.png"
+   ]
+  },
+  {
+   "id": "head_tonbo",
+   "category": "head",
+   "slot": "head",
+   "layer": "head",
+   "name_ja": "回転翼ヘッド「トンボ」",
+   "name_en": "Rotor Head \"Tonbo\"",
+   "frames": 2,
+   "files": [
+    "head_tonbo_1.png",
+    "head_tonbo_2.png"
+   ],
+   "fps": 12,
+   "loop": true,
+   "anim": "spin"
+  },
+  {
+   "id": "arm_tsutsu",
+   "category": "arms",
+   "slot": "arms",
+   "layer": "arms",
+   "name_ja": "小銃アーム「ツツ」",
+   "name_en": "Rifle Arms \"Tsutsu\"",
+   "frames": 1,
+   "files": [
+    "arm_tsutsu.png"
+   ]
+  },
+  {
+   "id": "arm_kamaitachi",
+   "category": "arms",
+   "slot": "arms",
+   "layer": "arms",
+   "name_ja": "刃腕「カマイタチ」",
+   "name_en": "Blade Arms \"Kamaitachi\"",
+   "frames": 1,
+   "files": [
+    "arm_kamaitachi.png"
+   ]
+  },
+  {
+   "id": "arm_arare",
+   "category": "arms",
+   "slot": "arms",
+   "layer": "arms",
+   "name_ja": "回転砲腕「アラレ」",
+   "name_en": "Gatling Arms \"Arare\"",
+   "frames": 1,
+   "files": [
+    "arm_arare.png"
+   ]
+  },
+  {
+   "id": "leg_hashiri",
+   "category": "legs",
+   "slot": "legs",
+   "layer": "legs",
+   "name_ja": "二脚「ハシリ」",
+   "name_en": "Biped Legs \"Hashiri\"",
+   "frames": 1,
+   "files": [
+    "leg_hashiri.png"
+   ]
+  },
+  {
+   "id": "leg_doroashi",
+   "category": "legs",
+   "slot": "legs",
+   "layer": "legs",
+   "name_ja": "履帯「ドロアシ」",
+   "name_en": "Tracked Legs \"Doroashi\"",
+   "frames": 1,
+   "files": [
+    "leg_doroashi.png"
+   ]
+  },
+  {
+   "id": "leg_kagerou",
+   "category": "legs",
+   "slot": "legs",
+   "layer": "legs",
+   "name_ja": "浮遊脚「カゲロウ」",
+   "name_en": "Hover Legs \"Kagerou\"",
+   "frames": 1,
+   "files": [
+    "leg_kagerou.png"
+   ]
+  },
+  {
+   "id": "equip_taketonbo",
+   "category": "equip",
+   "slot": "back",
+   "layer": "back",
+   "name_ja": "回転翼「タケトンボ」",
+   "name_en": "Rotor Pack \"Taketonbo\"",
+   "frames": 2,
+   "files": [
+    "equip_taketonbo_1.png",
+    "equip_taketonbo_2.png"
+   ],
+   "fps": 12,
+   "loop": true,
+   "anim": "spin"
+  },
+  {
+   "id": "equip_homura",
+   "category": "equip",
+   "slot": "back",
+   "layer": "back",
+   "name_ja": "噴進器「ホムラ」",
+   "name_en": "Booster \"Homura\"",
+   "frames": 1,
+   "files": [
+    "equip_homura.png"
+   ]
+  },
+  {
+   "id": "equip_mimizuku",
+   "category": "equip",
+   "slot": "back",
+   "layer": "back",
+   "name_ja": "探知器「ミミズク」",
+   "name_en": "Radar \"Mimizuku\"",
+   "frames": 1,
+   "files": [
+    "equip_mimizuku.png"
+   ]
+  },
+  {
+   "id": "equip_kamenoko",
+   "category": "equip",
+   "slot": "shoulderL",
+   "layer": "shoulder",
+   "name_ja": "盾「カメノコ」",
+   "name_en": "Shield \"Kamenoko\"",
+   "frames": 1,
+   "files": [
+    "equip_kamenoko.png"
+   ]
+  },
+  {
+   "id": "equip_ikazuchi",
+   "category": "equip",
+   "slot": "shoulderR",
+   "layer": "shoulder",
+   "name_ja": "肩砲「イカヅチ」",
+   "name_en": "Shoulder Cannon \"Ikazuchi\"",
+   "frames": 1,
+   "files": [
+    "equip_ikazuchi.png"
+   ]
+  }
+ ],
+ "notes": [
+  "ディザなし・アンチエイリアスなし。拡大は nearest で。",
+  "2コマのパーツ（head_tonbo, equip_taketonbo）は files を順に切り替え（推奨12fps）。",
+  "equip_kamenoko は画面左の腕の前に、equip_ikazuchi は画面右の肩に付く。反転して使う場合は画像を左右反転（x→64-x では1pxずれるので、反転時は1px右へずらすと全アンカーが一致）。"
+ ]
+}
