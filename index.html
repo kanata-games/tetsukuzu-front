@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>鉄屑戦線 v0.5.1</title>
+<title>鉄屑戦線 v0.6</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;background:#0b0c0b;color:#c9c4b4;font-family:"BIZ UDGothic","Osaka-Mono",ui-monospace,"Noto Sans Mono CJK JP",monospace;font-size:15px;-webkit-tap-highlight-color:transparent}
@@ -45,6 +45,9 @@ button:disabled{opacity:.4}
 #resOv{position:fixed;left:0;right:0;bottom:0;z-index:20;display:none;background:#0b0c0bf4;border-top:2px solid #b07a32;padding:10px 12px calc(10px + env(safe-area-inset-bottom));max-width:430px;margin:0 auto}
 #resOv.on{display:block}#resOv .rt{font-weight:bold;margin-bottom:8px;line-height:1.5;font-size:14px}
 @media (max-height:760px){#s-battle #binfo{display:none}#s-battle .log{height:74px}}
+.pr{display:flex;align-items:center;gap:3px;background:#131411;border:1px solid #2a2823;padding:3px}.pr .no{width:1.3em;color:#d9a441;text-align:center;font-size:12px}
+.pr select{flex:1;min-width:0;font:inherit;font-size:12px;background:#1b1c19;color:#d8d2c0;border:1px solid #4a463c;border-radius:3px;padding:6px 2px}
+.pr .th{color:#7d7868;font-size:12px}.pr .pc{flex:1;font-size:12px;color:#a39c88;padding-left:4px}.pr button{padding:5px 7px;font-size:12px;flex:none}
 footer{border-top:1px solid #3a3730;padding-top:5px;font-size:11px;color:#6a6558;text-align:center}
 .inv{font-size:12px;color:#a39c88;background:#131411;border:1px solid #3a3730;border-radius:6px;padding:6px 8px;line-height:1.5}
 .hpbar{height:8px;background:#2a1a1a;border-radius:4px;overflow:hidden;width:120px;margin:3px auto}
@@ -109,6 +112,7 @@ button,.stats,.inv,.log,canvas{border-radius:3px!important}
   <div class="warnTxt" id="sortieMsg"></div>
   <div class="hd">■ 行動方針（AI）</div>
   <div class="row" id="tacs"></div>
+  <div class="row" id="tacs2"></div>
   <div class="flav" id="tacDesc" style="font-style:normal"></div>
   <button class="pri" id="btnFight" onclick="fight()">▶ 交戦開始</button>
   <div class="row"><button id="btnReroll" onclick="newEnemy()">索敵やり直し</button><button onclick="go('home')">撤収</button></div>
@@ -126,6 +130,17 @@ button,.stats,.inv,.log,canvas{border-radius:3px!important}
   <div class="list" id="rankList" style="gap:2px"></div>
   <button onclick="go('home')">← 格納庫へ戻る</button>
  </section>
+ <!-- Program editor -->
+ <section class="scr" id="s-prog">
+  <div class="role">行動プログラム編集</div>
+  <div class="row" id="pslots"></div>
+  <div class="flav" style="font-style:normal">上から順に判定し、最初に当てはまった行動を実行（最大8行）</div>
+  <div class="list" id="prules" style="gap:4px;flex:none"></div>
+  <div class="row"><button id="btnAddRule" onclick="addRule()">＋ ルール追加</button></div>
+  <div class="hd">■ プリセットを読み込む</div>
+  <div class="row"><button onclick="loadPreset('rush')">突撃</button><button onclick="loadPreset('kite')">引き撃ち</button><button onclick="loadPreset('cover')">遮蔽物</button><button onclick="loadPreset('evade')">回避</button></div>
+  <button class="pri" id="btnUseProg" onclick="useProg()">▶ このプログラムで出撃準備へ</button>
+ </section>
  <!-- Battle -->
  <section class="scr" id="s-battle">
   <div class="vs">
@@ -141,7 +156,7 @@ button,.stats,.inv,.log,canvas{border-radius:3px!important}
   <div id="resOv"><div class="rt" id="resTxt"></div><div class="row"><button class="pri" id="btnOvHome" onclick="go('home')">格納庫へ帰投</button><button id="btnOvRank" onclick="go('rank')">順位表へ</button></div></div>
  </section>
 </main>
-<footer>制作：清掃員工房 ／ カナタゲームズ　v0.5.1</footer>
+<footer>制作：清掃員工房 ／ カナタゲームズ　v0.6</footer>
 </div>
 <script src="assets/parts/manifest.js"></script>
 <script>
@@ -203,7 +218,8 @@ let G;
 function fresh(){return{cr:200,owned:['B1','H1','A1','L1','X1','X3'],build:{BODY:'B1',HEAD:'H1',ARMS:'A1',LEGS:'L1',SHOULDER:null,BACK:null},wins:0,loss:0,tac:'rush'};}
 function load(){try{G=JSON.parse(localStorage.getItem(KEY))}catch(e){G=null}if(!G||!G.build||!G.build.BODY)G=fresh();if(!G.tac)G.tac='rush';
  if(!Array.isArray(G.ladder)||G.ladder.length!==RIVALS.length+1)G.ladder=[...RIVALS.map(r=>r.id),'YOU'];
- if(typeof G.venue!=='number')G.venue=0;if(!Array.isArray(G.beat))G.beat=[];G.ver=4;}
+ if(typeof G.venue!=='number')G.venue=0;if(!Array.isArray(G.beat))G.beat=[];
+ if(!Array.isArray(G.progs)||G.progs.length!==3)G.progs=['rush','cover','evade'].map(k=>TACTICS[k].rules.map(r=>({c:r.c,a:r.a})));G.ver=6;}
 function save(){localStorage.setItem(KEY,JSON.stringify(G));}
 
 // ---- stats ----
@@ -383,42 +399,65 @@ function showEnemy(){
  $('sortieTitle').textContent=(EN.rival?`リーグ戦 ${rankOf(EN.rival)}位への挑戦`:'フリー出撃 ── 敵影捕捉')+'　＠'+VENUES[G.venue].n;
  $('btnReroll').style.display=EN.rival?'none':'';
  draw($('cvMe'),G.build);draw($('cvEn'),b);
- $('meRole').textContent=calc(G.build).role;$('enName').textContent=EN.name+' Lv'+(+EN.lv).toFixed(1);$('enRole').textContent=s.role+'／'+TACTICS[EN.tac].n;renderTac();
+ $('meRole').textContent=calc(G.build).role;$('enName').textContent=EN.name+' Lv'+(+EN.lv).toFixed(1);$('enRole').textContent=s.role+'／'+progOf(EN.tac).n;renderTac();
  const es=eStats();$('statEn').innerHTML=statHTML(es);
  const me=calc(G.build);
  $('cmp').innerHTML='<span class="h">項目</span><span class="h">自機</span><span class="h">敵機</span>'+[['耐久','hp'],['装甲','arm'],['攻撃','atk'],['機動','mob'],['飛行','fly']].map(([l,k])=>`<span>${l}</span><span style="color:${me[k]>=es[k]?'#b5c46a':'#d0503a'}">${me[k]}</span><span>${es[k]}</span>`).join('');
  $('sortieMsg').textContent=me.tooHeavy?'⚠ 自機が過積載のため出撃できません':'';$('btnFight').disabled=me.tooHeavy;
 }
 function eStats(){const s=calc(EN.b),m=EM+(EN.lv-1)*0.1;return{...s,hp:Math.round(s.hp*m),atk:Math.round(s.atk*m)};}
-// ---- AI：データ駆動の行動ルール（上から順に評価し、最初に条件を満たした行動を実行）----
-// 条件: [変数, 演算子, 値]（値に変数名も可）
-// 変数: nl射線なし継続秒 dist距離 rng射程 near近接距離 far保持距離 hp自機耐久% inCover遮蔽中 fly飛行中 los射線あり
-// 行動: charge蛇行突進 advance前進 retreat後退 cover遮蔽物へ strafe横移動回避 hold停止射撃
-const TACTICS={
- rush:{n:'突撃',d:'ジグザグに詰めて至近距離で撃つ。',rules:[{when:[['los','==',0]],act:'advance'},{when:[['dist','>','near']],act:'charge'},{when:[],act:'hold'}]},
- kite:{n:'引き撃ち',d:'射程ぎりぎりを保ち、近づかれたら下がる。',rules:[{when:[['dist','<','far']],act:'retreat'},{when:[['dist','>','rng']],act:'advance'},{when:[['los','==',0]],act:'strafe'},{when:[],act:'hold'}]},
- cover:{n:'遮蔽物利用',d:'遮蔽物の陰から撃つ。飛行機は横移動。',rules:[{when:[['fly','==',1]],act:'strafe'},{when:[['nl','>',2.5]],act:'advance'},{when:[['inCover','==',0]],act:'cover'},{when:[['los','==',0]],act:'cover'},{when:[],act:'hold'}]},
- evade:{n:'回避優先',d:'横移動で弾を避けつつ撃つ。弱ると後退。',rules:[{when:[['hp','<',35],['dist','<','rng']],act:'retreat'},{when:[['dist','>','rng']],act:'advance'},{when:[],act:'strafe'}]},
+// ---- AI：プログラム（条件→行動のルール列。上から順に評価し、最初に当てはまった行動を実行。最後は「それ以外」）----
+const COND={
+ always:{n:'常に',f:v=>true},
+ near:{n:'距離：近い',f:v=>v.band===0},mid:{n:'距離：中間',f:v=>v.band===1},far:{n:'距離：遠い',f:v=>v.band===2},
+ hp30:{n:'自機HP<30%',f:v=>v.hp<30},hp50:{n:'自機HP<50%',f:v=>v.hp<50},hp70:{n:'自機HP<70%',f:v=>v.hp<70},
+ ehp30:{n:'敵HP<30%',f:v=>v.ehp<30},ehp50:{n:'敵HP<50%',f:v=>v.ehp<50},
+ efly:{n:'敵が飛行中',f:v=>v.efly},egnd:{n:'敵が地上',f:v=>!v.efly},myfly:{n:'自機が飛行中',f:v=>v.fly},
+ los:{n:'射線あり',f:v=>v.los},nolos:{n:'射線なし',f:v=>!v.los},nolong:{n:'射線なし2.5秒',f:v=>v.nl>2.5},
+ incov:{n:'自機が遮蔽中',f:v=>v.inCover},eincov:{n:'敵が遮蔽中',f:v=>v.eCover},hit:{n:'被弾した直後',f:v=>v.hitR},
 };
-const TMOD={rush:{dmg:1.0,def:1},kite:{dmg:.9,def:1},cover:{dmg:1.1,def:1},evade:{dmg:1.05,def:1}}; // 方針ごとの補正（火力・被ダメ）
-const ACTN={charge:'蛇行突進',advance:'前進',retreat:'後退',cover:'遮蔽物へ移動',hold:'停止射撃',strafe:'横移動回避'};
-function decide(u,v){
- const val=x=>typeof x==='string'?v[x]:x;
- const ok=([k,op,x])=>{const a=v[k],b=val(x);return op==='>'?a>b:op==='<'?a<b:op==='>='?a>=b:op==='<='?a<=b:a===b;};
- return (TACTICS[u.tac]||TACTICS.rush).rules.find(r=>r.when.every(ok)).act;
-}
+const ACTN={advance:'接近',retreat:'後退',strafeL:'左へ横移動',strafeR:'右へ横移動',orbit:'周回',cover:'遮蔽物へ',pass:'一撃離脱',flank:'上空から側面へ',hold:'停止射撃',evade:'回避機動',charge:'蛇行突進'};
+const TACTICS={ // プリセット（ライバルも使用）
+ rush:{n:'突撃',d:'蛇行して詰め、近距離で周回。飛行時は一撃離脱。',rules:[{c:'myfly',a:'pass'},{c:'nolos',a:'advance'},{c:'near',a:'orbit'},{c:null,a:'charge'}]},
+ kite:{n:'引き撃ち',d:'近づかれたら下がり、中距離は横移動。飛行時は周回。',rules:[{c:'myfly',a:'orbit'},{c:'near',a:'retreat'},{c:'far',a:'advance'},{c:'nolos',a:'strafeR'},{c:null,a:'strafeL'}]},
+ cover:{n:'遮蔽物利用',d:'遮蔽物から撃つ。飛行時は上空から側面へ回る。',rules:[{c:'myfly',a:'flank'},{c:'nolong',a:'advance'},{c:'nolos',a:'cover'},{c:'incov',a:'hold'},{c:null,a:'cover'}]},
+ evade:{n:'回避優先',d:'回避機動を続け、弱ると後退。',rules:[{c:'hp30',a:'retreat'},{c:'far',a:'advance'},{c:'hit',a:'evade'},{c:null,a:'evade'}]},
+};
+const TMOD={rush:{dmg:1.0,def:1},kite:{dmg:.9,def:1},cover:{dmg:1.1,def:1},evade:{dmg:1.05,def:1}}; // プリセットごとの補正（自作は補正なし）
+const PSLOT=['p0','p1','p2'],PSN=['自作A','自作B','自作C'];
+function progOf(tac){if(TACTICS[tac])return TACTICS[tac];const i=PSLOT.indexOf(tac);if(i>=0&&G.progs&&G.progs[i])return{n:PSN[i],d:'自作プログラム',rules:G.progs[i]};return TACTICS.rush;}
+function decide(u,v){const R=progOf(u.tac).rules;for(let i=0;i<R.length;i++){const r=R[i];if(i===R.length-1||!r.c||(COND[r.c]&&COND[r.c].f(v)))return[r.a,i+1];}return['hold',0];}
 function setTac(k){G.tac=k;save();renderTac();}
 function renderTac(){
  $('tacs').innerHTML=Object.entries(TACTICS).map(([k,t])=>`<button data-tac="${k}" class="${G.tac===k?'pri':''}" onclick="setTac('${k}')">${t.n}</button>`).join('');
- $('tacDesc').textContent='行動方針：'+TACTICS[G.tac].d;
+ $('tacs2').innerHTML=PSLOT.map((k,i)=>`<button data-tac="${k}" class="${G.tac===k?'pri':''}" onclick="setTac('${k}')">${PSN[i]}</button>`).join('')+`<button onclick="openProg()">✎ 編集</button>`;
+ $('tacDesc').textContent='行動方針：'+progOf(G.tac).d;
 }
+// ---- プログラム編集 ----
+let PE=0;
+function openProg(){PE=Math.max(0,PSLOT.indexOf(G.tac));go('prog',true);renderProg();}
+function renderProg(){
+ const R=G.progs[PE];
+ $('pslots').innerHTML=PSN.map((n,i)=>`<button data-ps="${i}" class="${PE===i?'pri':''}" onclick="PE=${i};renderProg()">${n}</button>`).join('');
+ const co=c=>Object.entries(COND).filter(([k])=>k!=='always').map(([k,o])=>`<option value="${k}"${k===c?' selected':''}>${o.n}</option>`).join('');
+ const ao=a=>Object.entries(ACTN).map(([k,n])=>`<option value="${k}"${k===a?' selected':''}>${n}</option>`).join('');
+ $('prules').innerHTML=R.map((r,i)=>{const last=i===R.length-1;
+  return `<div class="pr"><span class="no">${i+1}</span>${last?'<span class="pc">それ以外</span>':`<select data-rc="${i}" onchange="G.progs[PE][${i}].c=this.value;save()">${co(r.c)}</select>`}<span class="th">→</span><select data-ra="${i}" onchange="G.progs[PE][${i}].a=this.value;save()">${ao(r.a)}</select>`+
+  (last?'':`<button onclick="mvRule(${i},-1)">↑</button><button onclick="mvRule(${i},1)">↓</button><button class="warn" onclick="delRule(${i})">✕</button>`)+'</div>';}).join('');
+ $('btnAddRule').disabled=R.length>=8;
+}
+function mvRule(i,d){const R=G.progs[PE],j=i+d;if(j<0||j>=R.length-1)return;[R[i],R[j]]=[R[j],R[i]];save();renderProg();}
+function delRule(i){G.progs[PE].splice(i,1);save();renderProg();}
+function addRule(){const R=G.progs[PE];if(R.length>=8)return;R.splice(R.length-1,0,{c:'near',a:'orbit'});save();renderProg();}
+function loadPreset(k){G.progs[PE]=TACTICS[k].rules.map(r=>({c:r.c,a:r.a}));if(G.progs[PE].length)G.progs[PE][G.progs[PE].length-1].c=null;save();renderProg();}
+function useProg(){G.tac=PSLOT[PE];save();go('sortie',true);showEnemy();}
 // ---- 2D戦場シミュレーション（固定刻み・シード付き乱数＝スキップしても同じ結果）----
-let ACTSPD={charge:1.4,retreat:.5,strafe:1};
-let TRCH=.6,FLYS=2,HPK=1.2,ARMK=.003,CLC=.45,CVR=.8,LEAD=.85,HOLDS=.8,CLOSE=1.5,STRS=1.3,DMG=.35,MOVS=.4,EM=.9;
+let ACTSPD={charge:1.4,retreat:.5,evade:1,pass:1.25,flank:1.1};
+let TEV=.5,FEV=.7,FSPD=1.2,ORB=.65,TRCH=.6,FLYS=2,HPK=1.2,ARMK=.003,CLC=.45,CVR=.8,LEAD=.6,HOLDS=1,CLOSE=1.5,STRS=1.3,DMG=.35,MOVS=.4,EM=.9;
 const AW=360,AH=300,DT=1/30,TLIM=60;
 let BLOCKS=[[95,55,26,44],[239,201,26,44],[166,136,28,28],[70,215,46,18],[244,67,46,18]],VCOL=['#14130f','#1e1d18','#4a4236','#6b5a40','#2a251e'];
 function setArena(v){BLOCKS=VENUES[v].blocks;VCOL=VENUES[v].col;}
-const WPN={A1:{k:'gun',rng:170,cd:.6,sp:300,mul:.42,spr:.07},A3:{k:'gun',rng:125,cd:.17,sp:320,mul:.105,spr:.15,cl:.5},A2:{k:'blade',rng:95,cd:1.2,mul:1.7},none:{k:'gun',rng:110,cd:.9,sp:260,mul:.35,spr:.08}};
+const WPN={A1:{k:'gun',rng:170,cd:.6,sp:300,mul:.42,spr:.07},A3:{k:'gun',rng:125,cd:.17,sp:320,mul:.105,spr:.15,cl:.5,aa:.5},A2:{k:'blade',rng:95,cd:1.2,mul:1.7},none:{k:'gun',rng:110,cd:.9,sp:260,mul:.35,spr:.08}};
 const ACCEL={L1:6,L2:2.5,L3:1.3};
 function rng32(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
 const inBlk=(x,y,pad=0)=>BLOCKS.some(([bx,by,bw,bh])=>x>bx-pad&&x<bx+bw+pad&&y>by-pad&&y<by+bh+pad);
@@ -428,7 +467,7 @@ function mkUnit(st,b,tac,x,y,nm){
  const w=WPN[b.ARMS]||WPN.none,can=[b.SHOULDER,b.BACK].includes('X4');
  const ground=!b.LEGS&&!st.canFly;
  return{nm,b,tac,x,y,vx:0,vy:0,hp:st.hp,cur:st.hp,arm:st.arm,fly:st.canFly,w,can,
-  atk:Math.max(8,st.atk-(can?18:0)),spd:ground?0:Math.max(14,Math.min(105,28+st.mob*1.1)),
+  atk:Math.max(8,st.atk-(can?18:0)),spd:ground?0:Math.max(14,Math.min(110,(28+st.mob*1.1)*(st.canFly?FSPD:1))),radar:[b.SHOULDER,b.BACK].includes('X5'),od:1,pp:'in',pt:0,lastHit:-9,rule:0,
   acc:st.canFly?3.5:(ACCEL[b.LEGS]||3),shots:0,hits:0,dealt:0,cd:.5,cd2:1.5,dash:0,act:'hold',dt:0,sd:1,st:0,flash:0,inCover:false,hit:st.hit||0};
 }
 function makeSim(seed,me,en){
@@ -442,15 +481,17 @@ function makeSim(seed,me,en){
    if(sc<bs){bs=sc;best=p;}});});return best;};
  const shoot=(u,o,kind)=>{
   const dd=Math.hypot(o.x-u.x,o.y-u.y),tt=dd/(kind==='can'?170:u.w.sp)*LEAD,ang=Math.atan2(o.y+o.vy*tt-u.y,o.x+o.vx*tt-u.x),ig=u.fly||o.fly;
-  if(kind==='can'){const a=ang+(R()-.5)*.12;S.bul.push({x:u.x,y:u.y,vx:Math.cos(a)*170,vy:Math.sin(a)*170,dmg:13,o:u,k:'shell',life:1.5,ig});return;}
-  const sp=u.w.spr*(u.act==='strafe'?STRS:u.act==='hold'?HOLDS:1)*(1+MOVS*Math.hypot(u.vx,u.vy)/100)*(o.fly&&!u.fly?FLYS:1)*(1-u.hit/40);
+  if(kind==='can'){const a=ang+(R()-.5)*(o.fly?.5:.12);S.bul.push({x:u.x,y:u.y,vx:Math.cos(a)*170,vy:Math.sin(a)*170,dmg:o.fly?7:13,o:u,k:'shell',life:1.5,ig});return;} // 肩砲は対空が苦手
+  const tv=Math.hypot(o.vx,o.vy),aaf=(o.fly&&!u.fly)?(u.w.aa??1)*(u.radar?.55:1):1; // 対空補正：回転砲・探知器
+  const sp=u.w.spr*(u.act==='hold'?HOLDS:1)*(1+MOVS*Math.hypot(u.vx,u.vy)/100)*(1+TEV*tv/100)
+   *(o.fly&&!u.fly?1+((FLYS-1)+FEV*tv/100)*aaf:1)*(1-u.hit/40); // 動く目標ほど当てにくい。飛行目標はさらに
   const a=ang+(R()-.5)*2*sp;
   S.bul.push({x:u.x,y:u.y,vx:Math.cos(a)*u.w.sp,vy:Math.sin(a)*u.w.sp,dmg:(R()<.15?1.8:1)*u.atk*u.w.mul*(1+Math.min(CLC,Math.max(0,1-dd/u.w.rng))*CLOSE*(u.w.cl??1)),o:u,k:'bul',life:u.w.rng/u.w.sp+.15,ig});
  };
  const damage=(t,d,b,src)=>{
   const am=(b&&b.o)?TMOD[b.o.tac]||{}:{},tm=TMOD[t.tac]||{};
   let dm=Math.max(.3,d*DMG*(am.dmg||1)*(1-Math.min(.5,t.arm*ARMK)))*(tm.def||1)*(t.inCover&&!(b&&b.ig)?CVR:1);
-  t.cur=Math.max(0,t.cur-dm);t.flash=.12;{const a=b?b.o:src;if(a){a.hits++;a.dealt+=dm;}}
+  t.cur=Math.max(0,t.cur-dm);t.flash=.12;t.lastHit=S.t;{const a=b?b.o:src;if(a){a.hits++;a.dealt+=dm;}}
   if(!S.done&&S.t-(t.lh||-9)>1.2&&t.cur>0){t.lh=S.t;log(`${t===S.me?'自機':'敵機'} 被弾 -${Math.ceil(dm)}（残${Math.ceil(t.cur)}）`);}
   if(t.cur<=0&&!S.done){S.done=true;S.end=S.t;S.win=t===S.en;log(`>> ${t.nm} 撃破`);
    for(let i=0;i<26;i++){const a=Math.random()*6.28,v=20+Math.random()*80;S.fx.push({x:t.x,y:t.y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,l:.6+Math.random()*.6,k:'ex'});}}
@@ -461,13 +502,25 @@ function makeSim(seed,me,en){
   const los=u.fly||o.fly||losClear(u,o);
   u.inCover=!u.fly&&blkDist(u.x,u.y)<16;u.nl=los?0:(u.nl||0)+DT;
   u.dt-=DT;u.st-=DT;if(u.st<=0){u.sd=-u.sd;u.st=.8+R()*.9;}
-  if(u.dt<=0){u.dt=.4;const v={dist,rng:u.w.rng,near:u.w.rng*.5,far:u.w.rng*.75,hp:u.cur/u.hp*100,inCover:u.inCover?1:0,fly:u.fly?1:0,los:los?1:0,nl:u.nl};
-   const a=decide(u,v);if(a!==u.act){u.act=a;log(`${u.nm}：${ACTN[a]}`);} if(a==='cover')u.spot=coverSpot(u,o);}
+  if(u.dt<=0){u.dt=.4;const v={dist,band:dist<u.w.rng*.5?0:dist>u.w.rng?2:1,hp:u.cur/u.hp*100,ehp:o.cur/o.hp*100,inCover:u.inCover,eCover:!o.fly&&blkDist(o.x,o.y)<16,fly:u.fly,efly:o.fly,los,nl:u.nl,hitR:S.t-u.lastHit<1.5};
+   let [a,ri]=decide(u,v);if(a==='flank'&&!u.fly)a='orbit'; // 地上機は側面回り込み→周回で代用
+   u.rule=ri;if(a!==u.act){u.act=a;if(a==='pass'){u.pp='in';}log(`${u.nm}：#${ri} ${ACTN[a]}`);} if(a==='cover')u.spot=coverSpot(u,o);}
   let tx=0,ty=0;
   if(u.act==='advance'){tx=nx;ty=ny;}
   else if(u.act==='charge'){tx=nx-ny*u.sd*.8;ty=ny+nx*u.sd*.8;}
   else if(u.act==='retreat'){tx=-nx;ty=-ny;if(u.x<20||u.x>AW-20||u.y<20||u.y>AH-20){tx+=-ny*u.sd;ty+=nx*u.sd;}}
-  else if(u.act==='strafe'){tx=-ny*u.sd+nx*.15;ty=nx*u.sd+ny*.15;}
+  else if(u.act==='evade'){tx=-ny*u.sd+nx*.15;ty=nx*u.sd+ny*.15;}
+  else if(u.act==='strafeL'||u.act==='strafeR'||u.act==='orbit'){ // 横移動・周回：接線方向＋距離維持
+   const sg=u.act==='strafeL'?-1:u.act==='strafeR'?1:u.od,Rr=u.w.rng*ORB,rad=Math.max(-1,Math.min(1,(dist-Rr)/Rr))*(u.act==='orbit'?1.3:.6);
+   tx=-ny*sg+nx*rad;ty=nx*sg+ny*rad;if((u.x<22||u.x>AW-22||u.y<22||u.y>AH-22)&&u.act==='orbit'&&u.st<.05)u.od=-u.od;}
+  else if(u.act==='pass'){ // 一撃離脱：突っ込んで撃ち、離脱して旋回
+   if(u.pp==='in'){tx=nx-ny*.25*u.od;ty=ny+nx*.25*u.od;if(dist<Math.max(45,u.w.rng*.35)){u.pp='out';u.pt=1.1;}}
+   else{u.pt-=DT;tx=-nx*.5-ny*u.od;ty=-ny*.5+nx*u.od;if(u.pt<=0||dist>u.w.rng*.95){u.pp='in';u.od=-u.od;}}}
+  else if(u.act==='flank'){ // 上空から側面へ：敵の遮蔽物の反対側（開いた側）へ回り込む
+   let gx,gy;const bi=BLOCKS.map(([bx,by,bw,bh])=>[bx+bw/2,by+bh/2]).sort((p,q)=>Math.hypot(p[0]-o.x,p[1]-o.y)-Math.hypot(q[0]-o.x,q[1]-o.y))[0];
+   const ex=o.x-bi[0],ey=o.y-bi[1],el=Math.hypot(ex,ey)||1,Rr=u.w.rng*.6;gx=o.x+ex/el*Rr;gy=o.y+ey/el*Rr;
+   gx=Math.max(20,Math.min(AW-20,gx));gy=Math.max(20,Math.min(AH-20,gy));const cx=gx-u.x,cy=gy-u.y,cd=Math.hypot(cx,cy);
+   if(cd>12){tx=cx/cd;ty=cy/cd;}else{tx=-ny*u.od;ty=nx*u.od;}}
   else if(u.act==='cover'&&u.spot){const cx=u.spot.x-u.x,cy=u.spot.y-u.y,cd=Math.hypot(cx,cy);if(cd>3){tx=cx/cd;ty=cy/cd;}}
   if(u.av>0){u.av-=DT;const px2=-ty*u.ad,py2=tx*u.ad;tx=px2+tx*.3;ty=py2+ty*.3;}
   const tl=Math.hypot(tx,ty);if(tl>1){tx/=tl;ty/=tl;}
@@ -522,8 +575,8 @@ function drawArena(S){
  const fr=Math.floor(S.t*12)%2;
  [S.me,S.en].forEach((u,i)=>{
   if(u.cur<=0&&S.t>S.end+.3)return;
-  const o=i?S.me:S.en,flip=o.x<u.x,lift=u.fly?14:0;
-  if(u.fly){ctx.fillStyle='#0008';ctx.beginPath();ctx.ellipse(u.x,u.y+10,13,4,0,0,6.3);ctx.fill();}
+  const o=i?S.me:S.en,flip=o.x<u.x,lift=u.fly?16+Math.round(Math.sin(S.t*5+i*2)*2):0;
+  if(u.fly){ctx.fillStyle='#0009';ctx.beginPath();ctx.ellipse(u.x+6,u.y+12,12,4,0,0,6.3);ctx.fill();}
   else if(u.inCover){ctx.strokeStyle='#d9a44166';ctx.strokeRect(u.x-15,u.y-15,30,30);}
   ctx.save();ctx.translate(Math.round(u.x),Math.round(u.y-lift));if(flip)ctx.scale(-1,1);
   ctx.drawImage(SPRC[i][fr],-32,-46);ctx.restore();
@@ -540,7 +593,7 @@ function drawArena(S){
  });
  ctx.fillStyle='#a39c88';ctx.font='10px monospace';ctx.fillText('■ '+VENUES[G.venue].n,6,12);ctx.fillText(`T+${S.t.toFixed(1)}s  ${ACTN[S.me.act]} / ${ACTN[S.en.act]}`,6,AH-6);
  const wn=u=>u.b.ARMS?P[u.b.ARMS].n.replace(/.*「(.*)」/,'$1'):'内蔵機銃',ac=u=>u.shots?Math.round(Math.min(u.hits,u.shots)/u.shots*100)+'%':'─';
- $('binfo').innerHTML='<span class="h">項目</span><span class="h">自機</span><span class="h">敵機</span>'+[['方針',u=>TACTICS[u.tac].n],['武装',u=>wn(u)+(u.can?'＋肩砲':'')],['行動',u=>ACTN[u.act]],['命中',ac],['与ダメ',u=>Math.round(u.dealt)]].map(([l,fn])=>`<span>${l}</span><span>${fn(S.me)}</span><span>${fn(S.en)}</span>`).join('');
+ $('binfo').innerHTML='<span class="h">項目</span><span class="h">自機</span><span class="h">敵機</span>'+[['方針',u=>progOf(u.tac).n],['ルール',u=>u.rule?'#'+u.rule:'─'],['武装',u=>wn(u)+(u.can?'＋肩砲':'')],['行動',u=>ACTN[u.act]],['命中',ac],['与ダメ',u=>Math.round(u.dealt)]].map(([l,fn])=>`<span>${l}</span><span>${fn(S.me)}</span><span>${fn(S.en)}</span>`).join('');
  $('hpMe').style.width=(S.me.cur/S.me.hp*100)+'%';$('hpEn').style.width=(S.en.cur/S.en.hp*100)+'%';
  $('hpMeT').textContent=Math.ceil(S.me.cur)+'/'+S.me.hp;$('hpEnT').textContent=Math.ceil(S.en.cur)+'/'+S.en.hp;
  const lg=S.logs.slice(S.fin&&S.res?-4:-5);if(S.fin&&S.res)lg.push(S.res);
@@ -569,11 +622,11 @@ function fight(){
   const notOwned=Object.keys(P).filter(k=>!G.owned.includes(k));
   if(notOwned.length&&Math.random()<0.5){const n=pick(notOwned);G.owned.push(n);res+=`／鹵獲：${P[n].n}`;}
  }else{G.loss++;G.cr+=15;res='■ 任務失敗　回収手当 15cr';}
- G.last={en:EN.name,win,turns:H.end.toFixed(1)+'秒',hp:Math.ceil(H.me.cur)+'/'+H.me.hp,note:res.replace('■ ','')+'（方針：'+TACTICS[G.tac].n+'）'};save();
+ G.last={en:EN.name,win,turns:H.end.toFixed(1)+'秒',hp:Math.ceil(H.me.cur)+'/'+H.me.hp,note:res.replace('■ ','')+'（方針：'+progOf(G.tac).n+'）'};save();
  go('battle');$('bEn').textContent=EN.name;$('btnBack').disabled=true;$('btnSkip').disabled=false;
  SPRC=[mechCanvas(G.build),mechCanvas(EN.b)];
  const [m,e]=buildUnits();SIM=makeSim(seed,m,e);SIM.res=res;SIM.lg=!!EN.rival;SPEED=1;$('btnSpd').textContent='2倍速';
- log0(`>> 交戦開始　自機【${TACTICS[m.tac].n}】／${e.nm}【${TACTICS[e.tac].n}】`);
+ log0(`>> 交戦開始　自機【${progOf(m.tac).n}】／${e.nm}【${progOf(e.tac).n}】`);
  acc=0;lastT=performance.now();requestAnimationFrame(loop);
 }
 function log0(t){SIM.logs.push(t);}
