@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>鉄屑戦線 v0.6</title>
+<title>鉄屑戦線 v0.7</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;background:#0b0c0b;color:#c9c4b4;font-family:"BIZ UDGothic","Osaka-Mono",ui-monospace,"Noto Sans Mono CJK JP",monospace;font-size:15px;-webkit-tap-highlight-color:transparent}
@@ -156,7 +156,7 @@ button,.stats,.inv,.log,canvas{border-radius:3px!important}
   <div id="resOv"><div class="rt" id="resTxt"></div><div class="row"><button class="pri" id="btnOvHome" onclick="go('home')">格納庫へ帰投</button><button id="btnOvRank" onclick="go('rank')">順位表へ</button></div></div>
  </section>
 </main>
-<footer>制作：清掃員工房 ／ カナタゲームズ　v0.6</footer>
+<footer>制作：清掃員工房 ／ カナタゲームズ　v0.7</footer>
 </div>
 <script src="assets/parts/manifest.js"></script>
 <script>
@@ -203,13 +203,49 @@ const P={
  X2:{s:'ACC',n:'噴進器「ホムラ」',spr:'boost',c:['#7a4a3a','#b07a5a','#47281f'],wt:10,arm:0,atk:0,mob:18,fly:10,cap:0},
  X3:{s:'ACC',n:'盾「カメノコ」',spr:'shield',c:['#5a6a7a','#8a9aaa','#333d47'],wt:14,arm:20,atk:0,mob:-3,fly:0,cap:0},
  X4:{s:'ACC',n:'肩砲「イカヅチ」',spr:'cannon',c:['#5a5a3a','#8a8a5a','#333320'],wt:16,arm:0,atk:18,mob:-2,fly:0,cap:0},
- X5:{s:'ACC',n:'探知器「ミミズク」',spr:'radar',c:['#5a5040','#8a7f68','#332d24'],wt:5,arm:0,atk:4,mob:6,fly:0,cap:0,hit:10},
+ X5:{s:'ACC',n:'探知器「ミミズク」',spr:'radar',c:['#5a5040','#8a7f68','#332d24'],wt:5,arm:0,atk:4,mob:6,fly:0,cap:0,hit:10,radar:1},
+ B4:{s:'BODY',n:'戦車コア「トーチカ」',wt:62,arm:40,atk:4,mob:-4,fly:0,cap:35},
+ B5:{s:'BODY',n:'蜘蛛コア「ジョロウ」',wt:26,arm:16,atk:0,mob:16,fly:0,cap:25},
+ B6:{s:'BODY',n:'骨組コア「ホネガラ」',wt:14,arm:6,atk:0,mob:12,fly:0,cap:30},
+ B7:{s:'BODY',n:'装甲箱コア「ツヅラ」',wt:48,arm:36,atk:0,mob:-2,fly:0,cap:15},
+ H5:{s:'HEAD',n:'多眼ヘッド「ヤツメ」',wt:8,arm:4,atk:3,mob:4,fly:0,cap:0,hit:8},
+ H6:{s:'HEAD',n:'遮光ヘッド「スダレ」',wt:9,arm:10,atk:2,mob:2,fly:0,cap:0},
+ H7:{s:'HEAD',n:'電探ヘッド「ドングリ」',wt:10,arm:5,atk:0,mob:0,fly:0,cap:0,hit:4,radar:1},
+ H8:{s:'HEAD',n:'狙撃眼ヘッド「タカノメ」',wt:7,arm:3,atk:6,mob:0,fly:0,cap:0,hit:12,scope:1},
+ A4:{s:'ARMS',n:'狙撃銃腕「モズ」',wt:16,arm:3,atk:22,mob:-2,fly:0,cap:0},
+ A5:{s:'ARMS',n:'火炎放射腕「カガリビ」',wt:18,arm:6,atk:18,mob:0,fly:0,cap:0},
+ A6:{s:'ARMS',n:'噴進弾腕「ハチノス」',wt:20,arm:5,atk:16,mob:-2,fly:0,cap:0},
+ A7:{s:'ARMS',n:'鉄拳腕「ゲンノウ」',wt:22,arm:12,atk:24,mob:-2,fly:0,cap:0},
+ A8:{s:'ARMS',n:'双短機銃腕「ツバクロ」',wt:10,arm:2,atk:12,mob:5,fly:0,cap:0},
+ A9:{s:'ARMS',n:'熱線腕「ヒバシ」',wt:18,arm:4,atk:20,mob:-1,fly:0,cap:0},
+ L4:{s:'LEGS',n:'逆関節「バッタ」',wt:18,arm:6,atk:0,mob:28,fly:0,cap:65},
+ L5:{s:'LEGS',n:'四脚「コマイヌ」',wt:30,arm:12,atk:0,mob:12,fly:0,cap:95},
+ L6:{s:'LEGS',n:'多脚「ザトウ」',wt:26,arm:10,atk:0,mob:18,fly:0,cap:95},
+ L7:{s:'LEGS',n:'車輪「コロ」',wt:16,arm:4,atk:0,mob:38,fly:0,cap:50},
+ L8:{s:'LEGS',n:'重履帯「ダイダラ」',wt:50,arm:26,atk:0,mob:2,fly:0,cap:150},
+ L9:{s:'LEGS',n:'跳躍脚「ハネアシ」',wt:16,arm:4,atk:0,mob:30,fly:5,cap:55},
+ X6:{s:'ACC',n:'対空砲「カラスオドシ」',wt:14,arm:2,atk:6,mob:-2,fly:0,cap:0},
+ X7:{s:'ACC',n:'噴進弾「ヤマバチ」',wt:10,arm:0,atk:10,mob:-2,fly:0,cap:0},
+ X8:{s:'ACC',n:'煙幕「キリサメ」',wt:6,arm:0,atk:0,mob:2,fly:0,cap:0},
+ X9:{s:'ACC',n:'妨害器「ザワメキ」',wt:5,arm:0,atk:0,mob:2,fly:0,cap:0,hit:2},
+ X10:{s:'ACC',n:'増加装甲「タタミ」',wt:20,arm:24,atk:0,mob:-5,fly:0,cap:0},
+ X11:{s:'ACC',n:'増槽「ヒョウタン」',wt:6,arm:0,atk:0,mob:12,fly:6,cap:0},
+ X12:{s:'ACC',n:'大型回転翼「オオトンボ」',wt:14,arm:0,atk:0,mob:-2,fly:42,cap:60,prop:1},
+ X13:{s:'ACC',n:'噴進翼「ハヤブサ」',wt:12,arm:0,atk:0,mob:20,fly:24,cap:10},
 };
 const FL={B1:'量産規格の汎用胴体。どこの戦場にも転がっている。',B2:'旧要塞砲の装甲板を流用した鈍重な胴体。',B3:'装甲を削り落とした斥候用の胴体。',
  H1:'旧式だが索敵範囲は広い。',H2:'赤い単眼が照準を外さない。',H3:'角は飾りではない。通信用の空中線だ。',H4:'頭頂部に回転翼を内蔵。脚を捨てれば空へ。',
  A1:'弾は安い。だから撃ち続けられる。',A2:'弾切れのない刃。至近距離専用。',A3:'六連銃身。重いが黙らせるには十分。',
  L1:'泥にも瓦礫にも強い二脚。',L2:'速さを捨て、積載を取った履帯。',L3:'地面効果で滑る浮遊脚。燃費は悪い。',
- X1:'回転翼。脚と組めば補助、脚なしならヘリになる。',X2:'背負い式噴進器。短時間なら跳べる。',X3:'焼け焦げた鉄板を重ねた盾。',X4:'肩に積む榴弾砲。反動に注意。',X5:'敵の熱源を拾う探知器。命中率が上がる。'};
+ X1:'回転翼。脚と組めば補助、脚なしならヘリになる。',X2:'背負い式噴進器。短時間なら跳べる。',X3:'焼け焦げた鉄板を重ねた盾。',X4:'肩に積む榴弾砲。反動に注意。',X5:'敵の熱源を拾う探知器。命中率が上がる。',
+ B4:'廃戦車の砲塔をくり抜いた胴体。とにかく硬い。',B5:'八本脚の機械から剥がした低重心の胴体。',B6:'外板のない骨組。軽く、積める。脆い。',B7:'弾薬箱を溶接した胴体。中身は聞くな。',
+ H5:'八つの眼で死角を潰す。命中が上がる。',H6:'すだれ状の遮光板。破片に強い。',H7:'頭頂の電探。飛ぶ敵を逃さない（対空精度↑）。',H8:'長筒の照準器。射程と命中が伸びる。',
+ A4:'一発で黙らせる長銃身。遠距離専用、空には当てにくい。',A5:'燃料を噴いて焼く。遮蔽物の陰にも回り込む。近距離専用。',A6:'腕の蜂の巣から誘導弾。飛ぶ敵にも食らいつくが、遮蔽物には弱い。',
+ A7:'杭打ち機付きの拳。重い一撃で装甲ごと砕く。',A8:'二丁の短機銃。軽く速いが威力は低い。',A9:'加熱した鉄心を撃ち出す。弾が速い。',
+ L4:'後ろへ曲がる脚。遮蔽物に阻まれると跳び越える。',L5:'四本脚で踏ん張る。射撃が安定する。',L6:'多脚で瓦礫も遮蔽物も乗り越える。',L7:'舗装路なら最速の車輪。止まるのが苦手。',L8:'巨大な履帯。何でも積めるが遅い。',L9:'ふくらはぎの噴射口で跳ねる。跳躍中は当たりにくい。',
+ X6:'飛ぶ敵だけを狙う連装機関砲。地上の敵には撃たない。',X7:'肩の発射筒から誘導弾。飛行機に強い。',X8:'被弾すると煙幕を張る。敵の照準が乱れる。',X9:'敵の照準器と誘導弾を狂わせる。',
+ X10:'畳ほどある鉄板。動きは鈍る。',X11:'背負う増槽。機動と飛行が少し伸びる。',X12:'大径の回転翼。重い機体でも浮かせる。',X13:'背中の噴進翼。飛べば速い。脚と組めば空を滑る。',
+};
 const SLOTS=[['BODY','胴体（必須）'],['HEAD','頭部'],['ARMS','腕・武器'],['LEGS','脚部'],['SHOULDER','肩装備'],['BACK','背装備']];
 const slotType=s=>(s==='SHOULDER'||s==='BACK')?'ACC':s;
 const STATN={arm:'装甲',atk:'攻撃',mob:'機動',fly:'飛行',wt:'重量',cap:'積載'};
@@ -219,7 +255,7 @@ function fresh(){return{cr:200,owned:['B1','H1','A1','L1','X1','X3'],build:{BODY
 function load(){try{G=JSON.parse(localStorage.getItem(KEY))}catch(e){G=null}if(!G||!G.build||!G.build.BODY)G=fresh();if(!G.tac)G.tac='rush';
  if(!Array.isArray(G.ladder)||G.ladder.length!==RIVALS.length+1)G.ladder=[...RIVALS.map(r=>r.id),'YOU'];
  if(typeof G.venue!=='number')G.venue=0;if(!Array.isArray(G.beat))G.beat=[];
- if(!Array.isArray(G.progs)||G.progs.length!==3)G.progs=['rush','cover','evade'].map(k=>TACTICS[k].rules.map(r=>({c:r.c,a:r.a})));G.ver=6;}
+ if(!Array.isArray(G.progs)||G.progs.length!==3)G.progs=['rush','cover','evade'].map(k=>TACTICS[k].rules.map(r=>({c:r.c,a:r.a})));G.ver=7;}
 function save(){localStorage.setItem(KEY,JSON.stringify(G));}
 
 // ---- stats ----
@@ -250,17 +286,17 @@ function calc(b){
 const LAY={BODY:[18,17],HEAD:[20,9],ARM:[13,18],LEGS:[16,29]};
 const ACCPOS={SHOULDER:{shield:[9,17],cannon:[6,12],radar:[10,10],boost:[11,11]},BACK:{shield:[33,15],cannon:[30,12],radar:[30,9],boost:[29,10]}};
 function blit(ctx,id,x,y,flip,so){
- const p=P[id],a=SPR[so||p.spr],pal={...PAL,m:p.c[0],l:p.c[1],d:p.c[2]};
+ const p=P[id],a=SPR[so||p.spr];if(!a)return;const pal={...PAL,m:p.c[0],l:p.c[1],d:p.c[2]};
  a.forEach((row,j)=>{for(let i=0;i<row.length;i++){const ch=row[i];if(ch==='.')continue;ctx.fillStyle=pal[ch];ctx.fillRect(flip?x+row.length-1-i:x+i,y+j,1,1);}});
 }
 function drawPx(ctx,b,f){
  const legs=b.LEGS, dy=legs?0:(calc(b).canFly?-2:10); // 脚なし：飛行なら浮く、地上なら沈む
- if(b.BACK&&P[b.BACK].spr!=='prop'){const s=P[b.BACK].spr,q=ACCPOS.BACK[s];blit(ctx,b.BACK,q[0],q[1]+dy);}
+ if(b.BACK&&P[b.BACK].spr&&P[b.BACK].spr!=='prop'){const s=P[b.BACK].spr,q=ACCPOS.BACK[s];blit(ctx,b.BACK,q[0],q[1]+dy);}
  if(legs) blit(ctx,legs,LAY.LEGS[0],LAY.LEGS[1]+(legs==='L3'?2:0));
  blit(ctx,b.BODY,LAY.BODY[0],LAY.BODY[1]+dy);
  if(b.ARMS){blit(ctx,b.ARMS,LAY.ARM[0],LAY.ARM[1]+dy);blit(ctx,b.ARMS,30,LAY.ARM[1]+dy,true);}
  if(b.HEAD) blit(ctx,b.HEAD,LAY.HEAD[0],LAY.HEAD[1]+dy);
- if(b.SHOULDER&&P[b.SHOULDER].spr!=='prop'){const s=P[b.SHOULDER].spr,q=ACCPOS.SHOULDER[s];blit(ctx,b.SHOULDER,q[0],q[1]+dy);}
+ if(b.SHOULDER&&P[b.SHOULDER].spr&&P[b.SHOULDER].spr!=='prop'){const s=P[b.SHOULDER].spr,q=ACCPOS.SHOULDER[s];blit(ctx,b.SHOULDER,q[0],q[1]+dy);}
  // 回転翼はどのスロットでも頭上に
  const hasProp=[b.SHOULDER,b.BACK].some(id=>id&&P[id].spr==='prop')||(b.HEAD==='H4');
  if(hasProp) blit(ctx,'X1',15,(b.HEAD?6:14)+dy,false,f?'prop2':'prop');
@@ -269,21 +305,70 @@ function drawPx(ctx,b,f){
 // 64x64 の同一フレームに組立位置で描かれているので (0,0) に重ねる。重ね順：背装備→脚→胴→腕→頭→肩装備
 const PIMG={B1:['body_nagi'],B2:['body_iwao'],B3:['body_tsubame'],H1:['head_mejiro'],H2:['head_hitomi'],H3:['head_onibi'],H4:['head_tonbo_1','head_tonbo_2'],
  A1:['arm_tsutsu'],A2:['arm_kamaitachi'],A3:['arm_arare'],L1:['leg_hashiri'],L2:['leg_doroashi'],L3:['leg_kagerou'],
- X1:['equip_taketonbo_1','equip_taketonbo_2'],X2:['equip_homura'],X3:['equip_kamenoko'],X4:['equip_ikazuchi'],X5:['equip_mimizuku']};
+ X1:['equip_taketonbo_1','equip_taketonbo_2'],X2:['equip_homura'],X3:['equip_kamenoko'],X4:['equip_ikazuchi'],X5:['equip_mimizuku'],
+ // v0.7 新パーツ（画像が manifest.js に載れば自動で画像に切替、なければコード描画）
+ B4:['body_tochika'],B5:['body_jorou'],B6:['body_honegara'],B7:['body_tsuzura'],H5:['head_yatsume'],H6:['head_sudare'],H7:['head_donguri'],H8:['head_takanome'],
+ A4:['arm_mozu'],A5:['arm_kagaribi'],A6:['arm_hachinosu'],A7:['arm_gennou'],A8:['arm_tsubakuro'],A9:['arm_hibashi'],
+ L4:['leg_batta'],L5:['leg_komainu'],L6:['leg_zatou'],L7:['leg_koro'],L8:['leg_daidara'],L9:['leg_haneashi'],
+ X6:['equip_karasuodoshi'],X7:['equip_yamabachi'],X8:['equip_kirisame'],X9:['equip_zawameki_1','equip_zawameki_2'],X10:['equip_tatami'],X11:['equip_hyoutan'],X12:['equip_ootonbo_1','equip_ootonbo_2'],X13:['equip_hayabusa']};
 // 装備の取付種別：back=背中レイヤー、L/R=画像が描かれている肩（画面上の左右）。肩スロット＝右肩、背スロットの盾・砲＝左肩に付ける（逆側は左右反転＋1px右）
-const AKIND={X1:'back',X2:'back',X5:'back',X3:'L',X4:'R'};
+const AKIND={X1:'back',X2:'back',X5:'back',X3:'L',X4:'R',X6:'R',X7:'R',X10:'L',X8:'back',X9:'back',X11:'back',X12:'back',X13:'back'};
+// ---- 新パーツのコード描画（64x64 組立済み位置。画像が届くまでの代替）----
+const FXC={k:'#0e0f14',g1:'#24272f',g2:'#383d48',g3:'#535a68',g4:'#747d8c',g5:'#9ca6b4',g6:'#ccd4dc',o1:'#282d1b',o2:'#424a2a',o3:'#616b3c',o4:'#889456',r1:'#3c1f15',r2:'#6c3520',r3:'#9c562a',r4:'#c68040',a1:'#7c3c0c',a2:'#f09e20',a3:'#ffe28c'};
+const FXM=a=>a.map(([x,y,w,h,c,f])=>[64-x-w,y,w,h,c,f]); // 左右反転（左パーツ→右）
+const FXS=a=>a.concat(FXM(a)); // 左右対称
+const FX={
+ // 胴体
+ B4:[[14,26,36,19,'o2'],[14,26,36,3,'o3'],[17,23,7,7,'g3'],[40,23,7,7,'g3'],[22,18,20,9,'o3'],[22,18,20,2,'o4'],[25,22,14,2,'k'],[27,22,10,1,'a2'],[18,31,28,9,'o1'],[20,33,24,1,'o3'],[20,37,24,1,'o3'],[16,28,1,1,'g5'],[47,28,1,1,'g5'],[16,42,1,1,'g5'],[47,42,1,1,'g5'],[22,44,20,3,'g2'],[29,40,6,4,'g3']],
+ B5:[[24,19,16,13,'g3'],[22,21,20,9,'g3'],[24,19,16,2,'g4'],[17,23,6,6,'g2'],[41,23,6,6,'g2'],[20,31,24,13,'r2'],[18,33,28,9,'r2'],[20,31,24,2,'r3'],[22,35,20,2,'a1'],[22,39,20,2,'a1'],[29,25,6,3,'k'],[30,26,4,1,'a2'],[26,43,12,4,'g2']],
+ B6:[[30,18,4,29,'g3'],[18,22,28,3,'g3'],[18,22,28,1,'g4'],[19,22,3,12,'g2'],[42,22,3,12,'g2'],[20,30,24,2,'g2'],[22,36,20,2,'g2'],[17,23,6,6,'g3'],[41,23,6,6,'g3'],[27,26,10,7,'r2'],[27,26,10,1,'r3'],[30,29,4,2,'a2'],[26,44,12,3,'g2']],
+ B7:[[15,18,34,28,'o2'],[15,18,34,2,'o3'],[15,18,2,28,'o3'],[15,31,34,2,'g2'],[31,20,2,26,'g2'],[15,18,4,4,'g3'],[45,18,4,4,'g3'],[15,42,4,4,'g3'],[45,42,4,4,'g3'],[25,21,14,3,'k'],[27,22,10,1,'a2'],[20,36,7,2,'a1'],[37,36,7,2,'a1'],[16,24,6,5,'g3'],[42,24,6,5,'g3'],[26,45,12,2,'g2']],
+ // 頭部
+ H5:[[23,10,18,13,'g3'],[22,12,20,9,'g3'],[23,10,18,2,'g4'],[24,14,16,6,'k'],[25,15,2,2,'a2'],[29,15,2,2,'a2'],[33,15,2,2,'a2'],[37,15,2,2,'a2'],[26,18,1,1,'a1'],[30,18,1,1,'a1'],[33,18,1,1,'a1'],[37,18,1,1,'a1'],[28,22,8,2,'g2']],
+ H6:[[19,10,2,8,'g3'],[43,10,2,8,'g3'],[22,8,20,15,'o3'],[22,8,20,2,'o4'],[20,12,24,7,'o2'],[22,13,20,5,'k'],[23,14,18,1,'a2'],[23,16,18,1,'a1'],[28,22,8,2,'g2']],
+ H7:[[24,5,16,4,'g5'],[22,8,20,9,'g4'],[24,5,16,1,'g6'],[26,8,1,8,'g3'],[31,6,2,10,'g5'],[37,8,1,8,'g3'],[21,16,22,3,'g2'],[29,17,6,1,'a2'],[25,19,14,4,'g3'],[28,22,8,2,'g2']],
+ H8:[[27,4,1,7,'g4'],[26,10,12,13,'g3'],[26,10,12,2,'g4'],[28,14,8,3,'k'],[29,15,3,1,'a2'],[38,12,9,4,'g2'],[38,12,9,1,'g3'],[46,11,4,6,'g3'],[48,13,1,2,'a3'],[28,22,8,2,'g2']],
+ // 腕（左右セット）
+ A4:[[14,21,10,9,'g3'],[14,21,10,2,'g4'],[16,30,6,9,'g2'],[15,39,8,6,'g3'],[16,45,6,3,'g2'],
+     [40,21,10,9,'g3'],[40,21,10,2,'g4'],[42,30,6,8,'g2'],[40,38,10,7,'o2'],[44,45,3,18,'g2'],[44,45,3,1,'g4'],[48,40,4,3,'g3'],[51,41,1,1,'a2'],[43,62,5,2,'g4']],
+ A5:FXS([[14,21,10,9,'r2'],[14,21,10,2,'r3'],[16,30,6,8,'g2'],[13,37,10,10,'g3'],[13,37,10,2,'g4'],[11,39,3,7,'r2'],[11,40,3,1,'a1'],[15,47,6,4,'g2'],[16,51,4,3,'g4'],[17,54,2,2,'a2'],[17,56,2,1,'a3',1]]),
+ A6:FXS([[14,21,10,9,'o2'],[14,21,10,2,'o3'],[16,30,6,6,'g2'],[11,36,14,14,'o2'],[11,36,14,2,'o3'],[13,39,10,9,'k'],[14,40,2,2,'r4'],[18,40,2,2,'r4'],[16,43,2,2,'r4'],[20,43,2,2,'r4'],[14,46,2,1,'r3'],[18,46,2,1,'r3']]),
+ A7:FXS([[13,21,12,10,'g3'],[13,21,12,2,'g4'],[15,31,8,7,'g2'],[11,38,15,12,'g3'],[11,38,15,2,'g4'],[12,42,13,1,'g2'],[12,46,13,1,'g2'],[16,50,5,8,'g5'],[17,58,3,3,'g6'],[13,40,2,2,'a1']]),
+ A8:FXS([[15,21,9,8,'g3'],[15,21,9,2,'g4'],[17,29,5,9,'g2'],[15,38,9,5,'g3'],[14,43,7,4,'g2'],[15,47,2,6,'g2'],[19,47,2,3,'g4'],[15,53,2,1,'a2',1]]),
+ A9:FXS([[14,21,10,9,'g3'],[14,21,10,2,'g4'],[16,30,6,7,'g2'],[14,37,10,5,'r2'],[15,42,8,15,'g2'],[15,42,8,1,'g4'],[14,45,10,2,'r3'],[14,50,10,2,'r3'],[17,57,4,3,'k'],[18,57,2,2,'a2'],[18,59,2,1,'a3']]),
+ // 脚
+ L4:FXS([[24,42,8,5,'g3'],[24,42,8,1,'g4'],[22,46,6,6,'g3'],[19,51,6,4,'g2'],[19,51,6,1,'g4'],[21,54,4,6,'g3'],[18,60,10,3,'g2'],[18,60,10,1,'g4'],[20,52,1,1,'a2']]),
+ L5:FXS([[18,42,14,6,'o2'],[18,42,14,1,'o3'],[11,46,8,4,'g3'],[8,49,5,10,'g2'],[6,59,9,4,'g3'],[22,48,5,10,'g2'],[21,58,8,4,'g3'],[22,44,2,1,'a2']]),
+ L6:FXS([[24,42,8,7,'g2'],[24,42,8,1,'g3'],[15,44,9,2,'g3'],[12,45,3,8,'g2'],[9,52,3,9,'g3'],[8,61,4,2,'g4'],[18,47,6,2,'g3'],[16,48,2,9,'g2'],[15,57,3,5,'g3'],[22,49,3,8,'g3'],[22,57,3,6,'g2'],[28,46,2,1,'a2']]),
+ L7:FXS([[20,42,12,6,'g2'],[20,42,12,1,'g3'],[15,47,12,15,'k'],[16,48,10,13,'g2'],[17,49,8,11,'g1'],[19,52,4,5,'g4'],[20,54,2,1,'a1'],[16,51,1,1,'g3'],[16,57,1,1,'g3'],[25,51,1,1,'g3'],[25,57,1,1,'g3']]),
+ L8:FXS([[18,42,14,6,'o2'],[18,42,14,1,'o3'],[10,46,20,17,'g2'],[10,46,20,2,'g3'],[11,49,18,1,'g1'],[11,52,18,1,'g1'],[11,55,18,1,'g1'],[11,58,18,1,'g1'],[11,61,18,1,'g1'],[12,47,3,3,'g4'],[22,44,2,1,'a2']]),
+ L9:FXS([[25,42,7,5,'g3'],[25,42,7,1,'g4'],[24,47,6,6,'g3'],[23,53,7,6,'g2'],[22,57,9,3,'r2'],[24,60,5,1,'a2'],[25,61,3,1,'a3',1],[21,58,1,2,'g4']]),
+ // 装備
+ X6:[[40,15,13,8,'g2'],[40,15,13,2,'g3'],[42,3,3,12,'g3'],[47,3,3,12,'g3'],[42,1,3,2,'g5'],[47,1,3,2,'g5'],[50,17,5,6,'o2'],[44,19,3,1,'a2']],
+ X7:[[38,8,16,14,'o2'],[38,8,16,2,'o3'],[40,11,3,3,'k'],[44,11,3,3,'k'],[48,11,3,3,'k'],[40,16,3,3,'k'],[44,16,3,3,'k'],[48,16,3,3,'k'],[41,12,1,1,'r4'],[45,12,1,1,'r4'],[49,12,1,1,'r4'],[41,17,1,1,'r4'],[45,17,1,1,'r4'],[49,17,1,1,'r4'],[44,21,4,3,'g2']],
+ X8:FXS([[13,9,7,14,'g3'],[13,9,7,2,'g5'],[13,14,7,1,'a1'],[13,17,7,1,'a1'],[15,7,3,2,'g4']]),
+ X9:[[12,12,8,11,'g2'],[12,12,8,2,'g3'],[14,15,4,2,'a2',0],[14,15,4,2,'a1',1],[13,2,1,10,'g4'],[17,4,1,8,'g4'],[12,1,3,1,'g5'],[44,12,8,11,'g2'],[44,12,8,2,'g3'],[46,2,1,10,'g4'],[50,5,1,7,'g4'],[46,15,4,2,'a1',0],[46,15,4,2,'a2',1]],
+ X10:[[7,18,15,26,'g3'],[7,18,15,2,'g4'],[7,18,2,26,'g4'],[9,36,11,2,'a1'],[9,39,11,2,'k'],[10,22,1,1,'g6'],[18,22,1,1,'g6'],[10,32,1,1,'g6'],[18,32,1,1,'g6'],[12,26,5,4,'g2']],
+ X11:FXS([[12,9,8,16,'o3'],[13,7,6,2,'o3'],[12,9,8,2,'o4'],[12,15,8,1,'g2'],[15,4,2,3,'g4'],[14,20,2,2,'a1']]),
+ X12:[[30,4,4,24,'g3'],[30,4,1,24,'g4'],[27,2,10,4,'g4'],[27,2,10,1,'g5'],[1,3,26,2,'g5',0],[37,3,26,2,'g5',0],[10,3,17,2,'g4',1],[37,3,17,2,'g4',1],[2,3,2,1,'g2',1],[6,3,2,1,'g2',1],[56,3,2,1,'g2',1],[60,3,2,1,'g2',1],[31,1,2,1,'a2']],
+ X13:FXS([[8,19,12,4,'g3'],[8,19,12,1,'g5'],[3,23,15,4,'g3'],[3,26,13,1,'g2'],[1,27,7,2,'g2'],[15,25,6,7,'g2'],[15,25,6,1,'g4'],[16,31,4,2,'a2'],[17,33,2,1,'a3',1]]),
+};
+function drawFX(ctx,id,f,flip,dy){const L=FX[id];if(!L)return;const fr=f%2;const X=(x,w)=>flip?65-x-w:x;
+ for(const p of L){const [x,y,w,h,c,ff]=p;if(ff!=null&&ff!==fr)continue;ctx.fillStyle=FXC.k;ctx.fillRect(X(x,w)-1,y-1+dy,w+2,h+2);}
+ for(const p of L){const [x,y,w,h,c,ff]=p;if(ff!=null&&ff!==fr)continue;ctx.fillStyle=FXC[c];ctx.fillRect(X(x,w),y+dy,w,h);}}
+
 const IMG={};
 (window.PART_IMAGES||[]).forEach(n=>{const im=new Image();im.onload=()=>{IMG[n]=im;render();};im.src='assets/parts/'+n+'.png';});
 const hasPropB=b=>[b.SHOULDER,b.BACK].some(id=>id&&P[id].spr==='prop')||b.HEAD==='H4';
 const pimg=(id,f)=>{const a=PIMG[id];return a?(IMG[a[(f||0)%a.length]]||IMG[a[0]]):null;};
-const artReady=b=>Object.values(b).every(id=>!id||pimg(id,0));
+const artReady=b=>Object.values(b).every(id=>!id||pimg(id,0)||FX[id]);
 function drawArt(ctx,b,f,arena){
  const st=calc(b),dy=b.LEGS?0:(st.canFly?-4:12); // 脚なし：飛行なら浮かせて影、地上なら接地
  if(!arena&&!b.LEGS&&st.canFly){ctx.fillStyle='#0007';ctx.beginPath();ctx.ellipse(32,59,13,3,0,0,6.3);ctx.fill();}
- const put=(im,flip)=>{if(!im)return;if(flip){ctx.save();ctx.translate(65,dy);ctx.scale(-1,1);ctx.drawImage(im,0,0);ctx.restore();}else ctx.drawImage(im,0,dy);};
- [b.BACK,b.SHOULDER].forEach(id=>{if(id&&AKIND[id]==='back')put(pimg(id,f));});
- ['LEGS','BODY','ARMS','HEAD'].forEach(k=>{if(b[k])put(pimg(b[k],f));});
- [['SHOULDER','R'],['BACK','L']].forEach(([k,side])=>{const id=b[k];if(id&&(AKIND[id]==='L'||AKIND[id]==='R'))put(pimg(id,f),AKIND[id]!==side);});
+ const put=(im,flip,id)=>{if(!im){if(id&&FX[id])drawFX(ctx,id,f||0,flip,dy);return;}if(flip){ctx.save();ctx.translate(65,dy);ctx.scale(-1,1);ctx.drawImage(im,0,0);ctx.restore();}else ctx.drawImage(im,0,dy);};
+ [b.BACK,b.SHOULDER].forEach(id=>{if(id&&AKIND[id]==='back')put(pimg(id,f),false,id);});
+ ['LEGS','BODY','ARMS','HEAD'].forEach(k=>{if(b[k])put(pimg(b[k],f),false,b[k]);});
+ [['SHOULDER','R'],['BACK','L']].forEach(([k,side])=>{const id=b[k];if(id&&(AKIND[id]==='L'||AKIND[id]==='R'))put(pimg(id,f),AKIND[id]!==side,id);});
 }
 function draw(cv,b,f,arena){
  if(cv.width!==64){cv.width=64;cv.height=64;}
@@ -338,22 +423,44 @@ const VENUES=[
  {n:'高層廃墟',t:'格闘機が多い',col:['#121212','#1c1c1c','#47423e','#625a52','#262320'],blocks:[[80,40,30,70],[250,190,30,70],[150,95,60,18],[150,187,60,18],[250,40,30,50],[80,210,30,50]]},
 ];
 // 順位は配列順（上位→下位）。v=本拠地の会場、boss=会場の門番
-const RIVALS=[
- {id:'r1',p:'シノノメ',m:'暁',v:3,lv:2.8,tac:'rush',boss:1,b:{BODY:'B1',HEAD:'H3',ARMS:'A2',LEGS:'L3',SHOULDER:'X5',BACK:'X2'}},
- {id:'r2',p:'ロク',m:'百足',v:3,lv:1.8,tac:'rush',b:{BODY:'B2',HEAD:'H3',ARMS:'A2',LEGS:'L2',SHOULDER:null,BACK:'X2'}},
- {id:'r3',p:'カスミ',m:'朧',v:3,lv:2.6,tac:'evade',b:{BODY:'B1',HEAD:'H2',ARMS:'A2',LEGS:'L1',SHOULDER:null,BACK:'X2'}},
- {id:'r4',p:'ジン',m:'辻斬',v:3,lv:2.4,tac:'rush',b:{BODY:'B3',HEAD:'H3',ARMS:'A2',LEGS:'L3',SHOULDER:null,BACK:'X2'}},
- {id:'r5',p:'ハヤテ',m:'雷鳥',v:2,lv:5.5,tac:'kite',boss:1,b:{BODY:'B3',HEAD:'H4',ARMS:'A1',LEGS:null,SHOULDER:'X5',BACK:'X2'}},
- {id:'r6',p:'ナギサ',m:'浮草',v:2,lv:4.3,tac:'kite',b:{BODY:'B1',HEAD:'H1',ARMS:'A3',LEGS:'L3',SHOULDER:null,BACK:'X1'}},
- {id:'r7',p:'ヒバリ',m:'カワセミ',v:2,lv:4,tac:'evade',b:{BODY:'B3',HEAD:'H4',ARMS:'A1',LEGS:null,SHOULDER:null,BACK:'X2'}},
- {id:'r8',p:'ガンテツ',m:'岩窟王',v:1,lv:1.7,tac:'cover',boss:1,b:{BODY:'B2',HEAD:'H3',ARMS:'A3',LEGS:'L2',SHOULDER:'X4',BACK:'X3'}},
- {id:'r9',p:'サクヤ',m:'砂嵐',v:1,lv:1.3,tac:'kite',b:{BODY:'B2',HEAD:'H1',ARMS:'A1',LEGS:'L2',SHOULDER:'X4',BACK:null}},
- {id:'r10',p:'ダイモン',m:'石亀',v:1,lv:1.0,tac:'rush',b:{BODY:'B2',HEAD:'H2',ARMS:'A3',LEGS:'L2',SHOULDER:null,BACK:null}},
- {id:'r11',p:'クロガネ',m:'鉄塔',v:0,lv:2.0,tac:'cover',boss:1,b:{BODY:'B1',HEAD:'H3',ARMS:'A1',LEGS:'L2',SHOULDER:null,BACK:null}},
- {id:'r12',p:'ゴンゾ',m:'ドラム缶',v:0,lv:1.3,tac:'cover',b:{BODY:'B2',HEAD:'H1',ARMS:'A3',LEGS:'L1',SHOULDER:null,BACK:null}},
- {id:'r13',p:'ミナト',m:'ハイエナ',v:0,lv:1.1,tac:'evade',b:{BODY:'B3',HEAD:'H2',ARMS:'A1',LEGS:'L1',SHOULDER:null,BACK:null}},
- {id:'r14',p:'ボルト',m:'サビツキ',v:0,lv:1,tac:'rush',b:{BODY:'B1',HEAD:'H1',ARMS:'A1',LEGS:'L1',SHOULDER:null,BACK:null}},
+const RIVALS=[ // sig＝この機体だけの部品（撃破で入手）
+ {id:'r1',p:'シノノメ',m:'暁',v:3,lv:3.9,boss:1,sig:['A9','L4'],b:{BODY:'B1',HEAD:'H3',ARMS:'A9',LEGS:'L4',SHOULDER:'X5',BACK:null}},
+ {id:'r2',p:'ロク',m:'百足',v:3,lv:3.1,sig:['A7','L6'],b:{BODY:'B2',HEAD:'H2',ARMS:'A7',LEGS:'L6',SHOULDER:null,BACK:'X3'}},
+ {id:'r3',p:'カスミ',m:'朧',v:3,lv:4.2,sig:['B5','H5'],b:{BODY:'B5',HEAD:'H5',ARMS:'A2',LEGS:'L1',SHOULDER:null,BACK:'X2'}},
+ {id:'r4',p:'ジン',m:'辻斬',v:3,lv:5.0,sig:['A5','L9'],b:{BODY:'B3',HEAD:'H3',ARMS:'A5',LEGS:'L9',SHOULDER:null,BACK:null}},
+ {id:'r5',p:'ハヤテ',m:'雷鳥',v:2,lv:6.2,boss:1,sig:['X7','X12'],b:{BODY:'B3',HEAD:'H1',ARMS:'A1',LEGS:null,SHOULDER:'X7',BACK:'X12'}},
+ {id:'r6',p:'ナギサ',m:'浮草',v:2,lv:6.4,sig:['H6','X9'],b:{BODY:'B1',HEAD:'H6',ARMS:'A3',LEGS:'L3',SHOULDER:'X9',BACK:'X1'}},
+ {id:'r7',p:'ヒバリ',m:'カワセミ',v:2,lv:3.3,sig:['H8','X13'],b:{BODY:'B3',HEAD:'H8',ARMS:'A1',LEGS:'L3',SHOULDER:null,BACK:'X13'}},
+ {id:'r8',p:'ガンテツ',m:'岩窟王',v:1,lv:6.0,boss:1,sig:['H7','X6'],b:{BODY:'B2',HEAD:'H7',ARMS:'A3',LEGS:'L2',SHOULDER:'X6',BACK:null}},
+ {id:'r9',p:'サクヤ',m:'砂嵐',v:1,lv:2.8,sig:['A6','X8'],b:{BODY:'B2',HEAD:'H1',ARMS:'A6',LEGS:'L2',SHOULDER:'X8',BACK:null}},
+ {id:'r10',p:'ダイモン',m:'石亀',v:1,lv:2.5,sig:['B4','L8'],b:{BODY:'B4',HEAD:'H2',ARMS:'A3',LEGS:'L8',SHOULDER:'X4',BACK:null}},
+ {id:'r11',p:'クロガネ',m:'鉄塔',v:0,lv:4.0,boss:1,sig:['A4','L5'],b:{BODY:'B1',HEAD:'H3',ARMS:'A4',LEGS:'L5',SHOULDER:null,BACK:null}},
+ {id:'r12',p:'ゴンゾ',m:'ドラム缶',v:0,lv:3.0,sig:['B7','X10'],b:{BODY:'B7',HEAD:'H1',ARMS:'A1',LEGS:'L2',SHOULDER:'X10',BACK:null}},
+ {id:'r13',p:'ミナト',m:'ハイエナ',v:0,lv:3.5,sig:['A8','X11'],b:{BODY:'B3',HEAD:'H2',ARMS:'A8',LEGS:'L1',SHOULDER:null,BACK:'X11'}},
+ {id:'r14',p:'ボルト',m:'サビツキ',v:0,lv:4.0,sig:['B6','L7'],b:{BODY:'B6',HEAD:'H1',ARMS:'A1',LEGS:'L7',SHOULDER:null,BACK:null}},
 ];
+// ライバル専用プログラム（性格づけ）。tac にはライバルIDを入れる
+const RPROG={
+ r1:{n:'黎明',d:'弱れば回避、寄られたら下がり、撃たれたら横へ。',rules:[{c:'hp30',a:'evade'},{c:'near',a:'retreat'},{c:'hit',a:'strafeR'},{c:'nolos',a:'flank'},{c:'far',a:'advance'},{c:null,a:'strafeL'}]},
+ r2:{n:'百足走り',d:'障害物ごと乗り越えて殴りに来る。',rules:[{c:'ehp50',a:'charge'},{c:'hit',a:'evade'},{c:null,a:'charge'}]},
+ r3:{n:'朧影',d:'被弾すると消えるように避け、隙を見て斬る。',rules:[{c:'hit',a:'evade'},{c:'near',a:'strafeL'},{c:'eincov',a:'advance'},{c:'far',a:'advance'},{c:null,a:'orbit'}]},
+ r4:{n:'辻斬り',d:'跳ねながら詰めて焼く。',rules:[{c:'hp30',a:'evade'},{c:'nolos',a:'advance'},{c:'near',a:'orbit'},{c:null,a:'charge'}]},
+ r5:{n:'雷撃',d:'遮蔽物に隠れた敵は上から回り込み、誘導弾を浴びせる。',rules:[{c:'eincov',a:'flank'},{c:'hp30',a:'retreat'},{c:'near',a:'orbit'},{c:'far',a:'advance'},{c:null,a:'strafeR'}]},
+ r6:{n:'漂流周回',d:'寄られたら離れ、あとはゆっくり周回。',rules:[{c:'near',a:'retreat'},{c:null,a:'orbit'}]},
+ r7:{n:'急降下',d:'撃たれたら回避、それ以外は一撃離脱。',rules:[{c:'hit',a:'evade'},{c:'far',a:'advance'},{c:null,a:'pass'}]},
+ r8:{n:'要塞',d:'飛ぶ敵には横移動で対空砲を回し、地上には籠城。',rules:[{c:'nolong',a:'advance'},{c:'efly',a:'strafeL'},{c:'far',a:'advance'},{c:'incov',a:'hold'},{c:null,a:'cover'}]},
+ r9:{n:'砂塵撹乱',d:'距離を取り、煙幕を張りつつ誘導弾。',rules:[{c:'near',a:'retreat'},{c:'hit',a:'evade'},{c:'nolos',a:'strafeL'},{c:'far',a:'advance'},{c:null,a:'strafeR'}]},
+ r10:{n:'前進制圧',d:'ひたすら前へ。近づけば止まって撃つ。',rules:[{c:'nolos',a:'advance'},{c:'near',a:'hold'},{c:null,a:'advance'}]},
+ r11:{n:'狙撃陣地',d:'遠くで止まって狙う。寄られたら下がる。',rules:[{c:'near',a:'retreat'},{c:'nolos',a:'strafeR'},{c:'far',a:'advance'},{c:null,a:'hold'}]},
+ r12:{n:'籠城',d:'遮蔽物に籠もって撃つ。',rules:[{c:'hp50',a:'cover'},{c:'incov',a:'hold'},{c:'nolong',a:'advance'},{c:null,a:'cover'}]},
+ r13:{n:'漁り屋',d:'弱った敵には突っ込み、自分が弱れば逃げる。',rules:[{c:'ehp30',a:'charge'},{c:'hp30',a:'retreat'},{c:'near',a:'strafeL'},{c:null,a:'advance'}]},
+ r14:{n:'がむしゃら',d:'見えなければ近づき、あとは突っ込む。',rules:[{c:'nolos',a:'advance'},{c:null,a:'charge'}]},
+};
+RIVALS.forEach(r=>r.tac=r.id);
+const SIGOWN=Object.fromEntries(RIVALS.flatMap(r=>r.sig.map(id=>[id,r])));
+const maxVenue=()=>{let v=0;while(VENUES[v+1]&&unlocked(v+1))v++;return v;};
+const shopPool=()=>Object.keys(P).filter(id=>!SIGOWN[id]||SIGOWN[id].v<maxVenue()); // 闇市・鹵獲：旧部品＋踏破済み会場の専用部品
+
 const RIV=Object.fromEntries(RIVALS.map(r=>[r.id,r]));
 const bossOf=v=>RIVALS.find(r=>r.v===v&&r.boss);
 const unlocked=v=>v===0||G.beat.includes(bossOf(v-1).id);
@@ -375,7 +482,7 @@ function renderRank(){
   const r=RIV[id];let act='';
   if(canChallenge(id))act=r.v===G.venue?`<button class="pri" data-ch="${id}" onclick="challenge('${id}')">挑戦</button>`:`<span style="color:#7d7868">要移動:${VENUES[r.v].n}</span>`;
   else if(i+1<m&&!unlocked(r.v))act='<span style="color:#6a6558">🔒</span>';
-  return `<div class="rw"><span class="rk">${i+1}位</span><span class="nm">${r.p}／「${r.m}」<span style="color:#6a6558">・${VENUES[r.v].n}</span>${r.boss?'<span class="tag">門番</span>':''}</span>${act}</div>`;}).join('');
+  return `<div class="rw"><span class="rk">${i+1}位</span><span class="nm">${r.p}／「${r.m}」<span style="color:#6a6558">・${VENUES[r.v].n}</span>${r.boss?'<span class="tag">門番</span>':''}<br><small style="color:#7d7868;font-size:10px">${calc(r.b).role}／専用：${r.sig.map(k=>P[k].n.replace(/.*「(.*)」/,'$1')).join('・')}</small></span>${act}</div>`;}).join('');
 }
 function challenge(id){const r=RIV[id];EN={b:{...r.b},name:`${r.p}／「${r.m}」`,lv:r.lv,tac:r.tac,rival:id};go('sortie',true);showEnemy();}
 // ---- enemy & battle ----
@@ -383,7 +490,7 @@ const ENAMES=['残党機 K-07「墓守」','略奪隊「灰狼」','脱走兵機
 let EN=null;
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 function newEnemy(){
- const ids=s=>Object.keys(P).filter(k=>P[k].s===s);
+ const pool=shopPool().concat(RIVALS.filter(r=>r.v===G.venue).flatMap(r=>r.sig)),ids=s=>Object.keys(P).filter(k=>P[k].s===s&&pool.includes(k));
  const b={BODY:pick(ids('BODY')),HEAD:pick([...ids('HEAD'),null]),ARMS:pick(ids('ARMS')),LEGS:pick([...ids('LEGS'),null]),SHOULDER:Math.random()<.5?pick(ids('ACC')):null,BACK:null};
  if(Math.random()<.4){const x=pick(ids('ACC'));if(x!==b.SHOULDER)b.BACK=x;}
  const vb=G.venue;
@@ -425,7 +532,7 @@ const TACTICS={ // プリセット（ライバルも使用）
 };
 const TMOD={rush:{dmg:1.0,def:1},kite:{dmg:.9,def:1},cover:{dmg:1.1,def:1},evade:{dmg:1.05,def:1}}; // プリセットごとの補正（自作は補正なし）
 const PSLOT=['p0','p1','p2'],PSN=['自作A','自作B','自作C'];
-function progOf(tac){if(TACTICS[tac])return TACTICS[tac];const i=PSLOT.indexOf(tac);if(i>=0&&G.progs&&G.progs[i])return{n:PSN[i],d:'自作プログラム',rules:G.progs[i]};return TACTICS.rush;}
+function progOf(tac){if(TACTICS[tac])return TACTICS[tac];const i=PSLOT.indexOf(tac);if(i>=0&&G.progs&&G.progs[i])return{n:PSN[i],d:'自作プログラム',rules:G.progs[i]};if(RPROG[tac])return RPROG[tac];return TACTICS.rush;}
 function decide(u,v){const R=progOf(u.tac).rules;for(let i=0;i<R.length;i++){const r=R[i];if(i===R.length-1||!r.c||(COND[r.c]&&COND[r.c].f(v)))return[r.a,i+1];}return['hold',0];}
 function setTac(k){G.tac=k;save();renderTac();}
 function renderTac(){
@@ -457,17 +564,23 @@ let TEV=.5,FEV=.7,FSPD=1.2,ORB=.65,TRCH=.6,FLYS=2,HPK=1.2,ARMK=.003,CLC=.45,CVR=
 const AW=360,AH=300,DT=1/30,TLIM=60;
 let BLOCKS=[[95,55,26,44],[239,201,26,44],[166,136,28,28],[70,215,46,18],[244,67,46,18]],VCOL=['#14130f','#1e1d18','#4a4236','#6b5a40','#2a251e'];
 function setArena(v){BLOCKS=VENUES[v].blocks;VCOL=VENUES[v].col;}
-const WPN={A1:{k:'gun',rng:170,cd:.6,sp:300,mul:.42,spr:.07},A3:{k:'gun',rng:125,cd:.17,sp:320,mul:.105,spr:.15,cl:.5,aa:.5},A2:{k:'blade',rng:95,cd:1.2,mul:1.7},none:{k:'gun',rng:110,cd:.9,sp:260,mul:.35,spr:.08}};
-const ACCEL={L1:6,L2:2.5,L3:1.3};
+const WPN={A1:{k:'gun',rng:170,cd:.6,sp:300,mul:.42,spr:.07},A3:{k:'gun',rng:125,cd:.17,sp:320,mul:.105,spr:.15,cl:.5,aa:.5},A2:{k:'blade',rng:95,cd:1.2,mul:1.7},none:{k:'gun',rng:110,cd:.9,sp:260,mul:.35,spr:.08},
+ A4:{k:'gun',rng:230,cd:1.7,sp:520,mul:1.1,spr:.03,cl:0,aa:1.4},A5:{k:'gun',fl:1,rng:80,cd:.08,sp:170,mul:.16,spr:.22,cl:.3},A6:{k:'msl',rng:200,cd:1.6,sp:150,mul:.45,spr:.3,n:2,turn:2.6},
+ A7:{k:'blade',rng:70,cd:1.8,mul:2.4},A8:{k:'gun',rng:115,cd:.11,sp:300,mul:.17,spr:.19,cl:.6},A9:{k:'gun',rng:175,cd:1.1,sp:800,mul:.75,spr:.035,aa:.8}};
+const AUXN={can:'肩砲',flak:'対空砲',msl:'誘導弾'};
+const ACCEL={L1:6,L2:2.5,L3:1.3,L4:5,L5:3,L6:3.5,L7:2,L8:2,L9:5};
 function rng32(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
 const inBlk=(x,y,pad=0)=>BLOCKS.some(([bx,by,bw,bh])=>x>bx-pad&&x<bx+bw+pad&&y>by-pad&&y<by+bh+pad);
 function losClear(a,b){const d=Math.hypot(b.x-a.x,b.y-a.y),n=Math.ceil(d/4);for(let i=1;i<n;i++){if(inBlk(a.x+(b.x-a.x)*i/n,a.y+(b.y-a.y)*i/n))return false;}return true;}
 const blkDist=(x,y)=>Math.min(...BLOCKS.map(([bx,by,bw,bh])=>Math.hypot(Math.max(bx-x,0,x-bx-bw),Math.max(by-y,0,y-by-bh))));
 function mkUnit(st,b,tac,x,y,nm){
- const w=WPN[b.ARMS]||WPN.none,can=[b.SHOULDER,b.BACK].includes('X4');
- const ground=!b.LEGS&&!st.canFly;
- return{nm,b,tac,x,y,vx:0,vy:0,hp:st.hp,cur:st.hp,arm:st.arm,fly:st.canFly,w,can,
-  atk:Math.max(8,st.atk-(can?18:0)),spd:ground?0:Math.max(14,Math.min(110,(28+st.mob*1.1)*(st.canFly?FSPD:1))),radar:[b.SHOULDER,b.BACK].includes('X5'),od:1,pp:'in',pt:0,lastHit:-9,rule:0,
+ const w0=WPN[b.ARMS]||WPN.none,w=b.HEAD&&P[b.HEAD].scope?{...w0,rng:w0.rng*1.2}:w0,ac=[b.SHOULDER,b.BACK],has=id=>ac.includes(id);
+ const can=has('X4'),aux=[];if(can)aux.push('can');if(has('X6'))aux.push('flak');if(has('X7'))aux.push('msl');
+ const ground=!b.LEGS&&!st.canFly,jets=has('X13')&&st.canFly;
+ return{nm,b,tac,x,y,vx:0,vy:0,hp:st.hp,cur:st.hp,arm:st.arm,fly:st.canFly,w,can,aux,cdA:{can:1.5,flak:.5,msl:2},
+  atk:Math.max(8,st.atk-(can?18:0)-(has('X6')?6:0)-(has('X7')?10:0)),spd:ground?0:Math.max(14,Math.min(jets?122:110,(28+st.mob*1.1)*(st.canFly?FSPD*(jets?1.12:1):1))),
+  radar:ac.concat(b.HEAD).some(id=>id&&P[id].radar),jam:has('X9'),smkU:has('X8'),smk:0,smkCd:0,hop:b.LEGS==='L4',jmp:b.LEGS==='L9',quad:b.LEGS==='L5',climb:b.LEGS==='L6',jump:0,jd:1,jcd:1,
+  od:1,pp:'in',pt:0,lastHit:-9,rule:0,
   acc:st.canFly?3.5:(ACCEL[b.LEGS]||3),shots:0,hits:0,dealt:0,cd:.5,cd2:1.5,dash:0,act:'hold',dt:0,sd:1,st:0,flash:0,inCover:false,hit:st.hit||0};
 }
 function makeSim(seed,me,en){
@@ -480,18 +593,23 @@ function makeSim(seed,me,en){
    const de=Math.hypot(sx-o.x,sy-o.y),sc=Math.hypot(sx-u.x,sy-u.y)+(losClear(p,o)?0:140)+Math.abs(de-u.w.rng*.8)*.6;
    if(sc<bs){bs=sc;best=p;}});});return best;};
  const shoot=(u,o,kind)=>{
-  const dd=Math.hypot(o.x-u.x,o.y-u.y),tt=dd/(kind==='can'?170:u.w.sp)*LEAD,ang=Math.atan2(o.y+o.vy*tt-u.y,o.x+o.vx*tt-u.x),ig=u.fly||o.fly;
-  if(kind==='can'){const a=ang+(R()-.5)*(o.fly?.5:.12);S.bul.push({x:u.x,y:u.y,vx:Math.cos(a)*170,vy:Math.sin(a)*170,dmg:o.fly?7:13,o:u,k:'shell',life:1.5,ig});return;} // 肩砲は対空が苦手
-  const tv=Math.hypot(o.vx,o.vy),aaf=(o.fly&&!u.fly)?(u.w.aa??1)*(u.radar?.55:1):1; // 対空補正：回転砲・探知器
-  const sp=u.w.spr*(u.act==='hold'?HOLDS:1)*(1+MOVS*Math.hypot(u.vx,u.vy)/100)*(1+TEV*tv/100)
-   *(o.fly&&!u.fly?1+((FLYS-1)+FEV*tv/100)*aaf:1)*(1-u.hit/40); // 動く目標ほど当てにくい。飛行目標はさらに
+  const air=x=>x.fly||x.jump>0,dd=Math.hypot(o.x-u.x,o.y-u.y),bsp=kind==='can'?170:kind==='flak'?400:kind==='msl'?140:u.w.sp,tt=dd/bsp*LEAD,ang=Math.atan2(o.y+o.vy*tt-u.y,o.x+o.vx*tt-u.x),ig=air(u)||air(o);
+  const smk=o.smk>0?2.2:1,jam=o.jam?1.2:1,rad=u.radar&&!o.jam;
+  if(kind==='can'){const a=ang+(R()-.5)*(o.fly?.5:.12)*smk;S.bul.push({x:u.x,y:u.y,vx:Math.cos(a)*170,vy:Math.sin(a)*170,dmg:o.fly?7:13,o:u,k:'shell',life:1.5,ig});return;} // 肩砲は対空が苦手
+  if(kind==='flak'){const a=ang+(R()-.5)*2*(.05+Math.hypot(o.vx,o.vy)*.0006)*smk*jam;S.bul.push({x:u.x,y:u.y,vx:Math.cos(a)*400,vy:Math.sin(a)*400,dmg:4.5,o:u,k:'bul',life:.6,ig:true});return;} // 対空砲：飛ぶ敵専用
+  if(kind==='msl'){for(let i=0;i<2;i++){const a=ang+(i-.5)*.7+(R()-.5)*.3;S.bul.push({x:u.x,y:u.y,vx:Math.cos(a)*140,vy:Math.sin(a)*140,sp:140,turn:3.2,tg:o,dmg:8,o:u,k:'msl',life:2.6,ig});}return;}
+  const tv=Math.hypot(o.vx,o.vy),aaf=(o.fly&&!u.fly)?(u.w.aa??1)*(rad?.55:1):1; // 対空補正：回転砲・探知器・電探
+  const sp=u.w.spr*(u.act==='hold'?HOLDS:1)*(u.quad?.6:1+MOVS*Math.hypot(u.vx,u.vy)/100)*(1+TEV*tv/100)
+   *(o.fly&&!u.fly?1+((FLYS-1)+FEV*tv/100)*aaf:1)*(o.jump>0&&!u.fly?1.6:1)*(u.jump>0?1.3:1)*smk*jam*(1-(o.jam?0:u.hit)/40); // 動く目標ほど当てにくい。飛行・跳躍目標はさらに
+  const dmg0=(R()<.15?1.8:1)*u.atk*u.w.mul*(1+Math.min(CLC,Math.max(0,1-dd/u.w.rng))*CLOSE*(u.w.cl??1));
+  if(u.w.k==='msl'){const n=u.w.n||2;for(let i=0;i<n;i++){const a=ang+(i-(n-1)/2)*.6+(R()-.5)*u.w.spr;S.bul.push({x:u.x,y:u.y,vx:Math.cos(a)*u.w.sp,vy:Math.sin(a)*u.w.sp,sp:u.w.sp,turn:u.w.turn,tg:o,dmg:dmg0,o:u,k:'msl',life:2.6,ig});}return;}
   const a=ang+(R()-.5)*2*sp;
-  S.bul.push({x:u.x,y:u.y,vx:Math.cos(a)*u.w.sp,vy:Math.sin(a)*u.w.sp,dmg:(R()<.15?1.8:1)*u.atk*u.w.mul*(1+Math.min(CLC,Math.max(0,1-dd/u.w.rng))*CLOSE*(u.w.cl??1)),o:u,k:'bul',life:u.w.rng/u.w.sp+.15,ig});
+  S.bul.push({x:u.x,y:u.y,vx:Math.cos(a)*u.w.sp,vy:Math.sin(a)*u.w.sp,dmg:dmg0,o:u,k:u.w.fl?'fl':'bul',life:u.w.rng/u.w.sp+.15,ig:ig||!!u.w.fl});
  };
  const damage=(t,d,b,src)=>{
   const am=(b&&b.o)?TMOD[b.o.tac]||{}:{},tm=TMOD[t.tac]||{};
   let dm=Math.max(.3,d*DMG*(am.dmg||1)*(1-Math.min(.5,t.arm*ARMK)))*(tm.def||1)*(t.inCover&&!(b&&b.ig)?CVR:1);
-  t.cur=Math.max(0,t.cur-dm);t.flash=.12;t.lastHit=S.t;{const a=b?b.o:src;if(a){a.hits++;a.dealt+=dm;}}
+  t.cur=Math.max(0,t.cur-dm);t.flash=.12;t.lastHit=S.t;if(t.smkU&&t.smkCd<=0&&t.cur>0){t.smk=2.5;t.smkCd=9;if(!S.done)log(`${t.nm}：煙幕展開`);}{const a=b?b.o:src;if(a){a.hits++;a.dealt+=dm;}}
   if(!S.done&&S.t-(t.lh||-9)>1.2&&t.cur>0){t.lh=S.t;log(`${t===S.me?'自機':'敵機'} 被弾 -${Math.ceil(dm)}（残${Math.ceil(t.cur)}）`);}
   if(t.cur<=0&&!S.done){S.done=true;S.end=S.t;S.win=t===S.en;log(`>> ${t.nm} 撃破`);
    for(let i=0;i<26;i++){const a=Math.random()*6.28,v=20+Math.random()*80;S.fx.push({x:t.x,y:t.y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,l:.6+Math.random()*.6,k:'ex'});}}
@@ -499,8 +617,9 @@ function makeSim(seed,me,en){
  const unitStep=(u,o)=>{
   if(u.cur<=0)return;
   const dx=o.x-u.x,dy=o.y-u.y,dist=Math.hypot(dx,dy)||1,nx=dx/dist,ny=dy/dist;
-  const los=u.fly||o.fly||losClear(u,o);
-  u.inCover=!u.fly&&blkDist(u.x,u.y)<16;u.nl=los?0:(u.nl||0)+DT;
+  const los=u.fly||o.fly||u.jump>0||o.jump>0||losClear(u,o);
+  u.inCover=!u.fly&&!(u.jump>0)&&blkDist(u.x,u.y)<16;u.smk-=DT;u.smkCd-=DT;u.jump-=DT;u.jcd-=DT;
+  if(u.jmp&&u.jcd<=0&&u.spd>0&&(u.act!=='hold'&&u.act!=='cover'||S.t-u.lastHit<1)){u.jump=u.jd=.55;u.jcd=1.3+R()*.7;} // 跳躍脚：動きながら跳ねるu.nl=los?0:(u.nl||0)+DT;
   u.dt-=DT;u.st-=DT;if(u.st<=0){u.sd=-u.sd;u.st=.8+R()*.9;}
   if(u.dt<=0){u.dt=.4;const v={dist,band:dist<u.w.rng*.5?0:dist>u.w.rng?2:1,hp:u.cur/u.hp*100,ehp:o.cur/o.hp*100,inCover:u.inCover,eCover:!o.fly&&blkDist(o.x,o.y)<16,fly:u.fly,efly:o.fly,los,nl:u.nl,hitR:S.t-u.lastHit<1.5};
    let [a,ri]=decide(u,v);if(a==='flank'&&!u.fly)a='orbit'; // 地上機は側面回り込み→周回で代用
@@ -524,35 +643,41 @@ function makeSim(seed,me,en){
   else if(u.act==='cover'&&u.spot){const cx=u.spot.x-u.x,cy=u.spot.y-u.y,cd=Math.hypot(cx,cy);if(cd>3){tx=cx/cd;ty=cy/cd;}}
   if(u.av>0){u.av-=DT;const px2=-ty*u.ad,py2=tx*u.ad;tx=px2+tx*.3;ty=py2+ty*.3;}
   const tl=Math.hypot(tx,ty);if(tl>1){tx/=tl;ty/=tl;}
-  const am=(u.b.LEGS==='L2'&&u.act==='charge')?TRCH:(ACTSPD[u.act]||1);let wx=tx*u.spd*am,wy=ty*u.spd*am;
+  const am=((u.b.LEGS==='L2'||u.b.LEGS==='L8')&&u.act==='charge')?TRCH:(ACTSPD[u.act]||1),jm=u.jmp&&u.jump>0?1.25:u.climb&&inBlk(u.x,u.y,4)?.55:1;let wx=tx*u.spd*am*jm,wy=ty*u.spd*am*jm;
   if(u.dash>0){u.dash-=DT;wx=nx*270;wy=ny*270;if(dist<22){damage(o,u.atk*u.w.mul*((TMOD[u.tac]||{}).dmg||1),null,u);u.dash=0;S.fx.push({x:o.x,y:o.y,l:.25,k:'slash'});if(!S.done)log(`${u.nm}：斬撃 ── ${o===S.me?'自機':'敵機'}被弾`);}}
   else{const k=Math.min(1,u.acc*DT);u.vx+=(wx-u.vx)*k;u.vy+=(wy-u.vy)*k;}
   const vx=u.dash>0?wx:u.vx,vy=u.dash>0?wy:u.vy;
   let px=u.x+vx*DT,py=u.y+vy*DT;
-  if(!u.fly){let bl=0;if(inBlk(px,u.y,10)){px=u.x;u.vx*=-.2;bl++;}if(inBlk(px,py,10)){py=u.y;u.vy*=-.2;bl++;}
-   if(bl&&!(u.av>0)&&u.spd>0){u.av=.7;u.ad=R()<.5?1:-1;}}
+  if(u.jump<=0&&u.jd>0&&(u.hop||u.jmp)&&inBlk(u.x,u.y,9))u.jump=.05; // 遮蔽物の上では着地しない
+  if(!u.fly&&!(u.jump>0)&&!u.climb){let bl=0;if(inBlk(px,u.y,10)){px=u.x;u.vx*=-.2;bl++;}if(inBlk(px,py,10)){py=u.y;u.vy*=-.2;bl++;}
+   if(bl&&u.hop&&u.jcd<=0){u.jump=u.jd=.7;u.jcd=2.2;px=u.x+vx*DT;py=u.y+vy*DT;if(!S.done)log(`${u.nm}：跳躍`);} // 逆関節：遮蔽物を跳び越える
+   else if(bl&&!(u.av>0)&&u.spd>0){u.av=.7;u.ad=R()<.5?1:-1;}}
   u.x=Math.max(12,Math.min(AW-12,px));u.y=Math.max(14,Math.min(AH-12,py));
-  u.cd-=DT;u.cd2-=DT;u.flash-=DT;
+  u.cd-=DT;u.cd2-=DT;u.flash-=DT;for(const k in u.cdA)u.cdA[k]-=DT;
   if(S.done)return;
-  if(u.cd<=0&&los&&dist<=u.w.rng){
+  if(u.cd<=0&&(los||(u.w.fl&&dist<u.w.rng*.8))&&dist<=u.w.rng){ // 火炎は遮蔽物の陰にも回り込む
    u.shots++;if(u.w.k==='blade'){u.dash=.3;u.cd=u.w.cd;S.fx.push({x:u.x,y:u.y,l:.3,k:'dash',tx:o.x,ty:o.y});}
    else{shoot(u,o,'gun');u.cd=u.w.cd*(.9+R()*.2);}
   }
-  if(u.can&&u.cd2<=0&&los&&dist<230){shoot(u,o,'can');u.cd2=3;log(`${u.nm}：砲撃`);}
+  if(u.can&&u.cdA.can<=0&&los&&dist<230){shoot(u,o,'can');u.cdA.can=3;log(`${u.nm}：砲撃`);}
+  if(u.aux.includes('flak')&&u.cdA.flak<=0&&(o.fly||o.jump>0)&&dist<210){shoot(u,o,'flak');u.cdA.flak=.35;}
+  if(u.aux.includes('msl')&&u.cdA.msl<=0&&dist<240&&(los||o.fly)){shoot(u,o,'msl');u.cdA.msl=3.4;log(`${u.nm}：誘導弾発射`);}
  };
  S.step=()=>{
   S.t+=DT;
   const ord=S.me.spd>=S.en.spd?[S.me,S.en]:[S.en,S.me];
   ord.forEach(u=>unitStep(u,u===S.me?S.en:S.me));
   S.bul=S.bul.filter(b=>{
-   b.x+=b.vx*DT;b.y+=b.vy*DT;b.life-=DT;
    const t=b.o===S.me?S.en:S.me;
-   if(!b.ig&&inBlk(b.x,b.y)){S.fx.push({x:b.x,y:b.y,l:.15,k:b.k==='shell'?'boom':'spark'});return false;}
-   if(Math.hypot(t.x-b.x,t.y-b.y)<(b.k==='shell'?14:10)&&t.cur>0&&!(t.dash>0&&R()<.5)){ // 踏み込み中は半分回避
+   if(b.k==='msl'&&t.cur>0){const ca=Math.atan2(b.vy,b.vx),ta=Math.atan2(t.y-b.y,t.x-b.x);let da=ta-ca;while(da>Math.PI)da-=6.283;while(da<-Math.PI)da+=6.283;
+    const tr=b.turn*(t.jam?.4:1)*(t.smk>0?.5:1)*DT,na=ca+Math.max(-tr,Math.min(tr,da));b.vx=Math.cos(na)*b.sp;b.vy=Math.sin(na)*b.sp;if(R()<.3)S.fx.push({x:b.x,y:b.y,l:.3,k:'trail'});} // 誘導弾
+   b.x+=b.vx*DT;b.y+=b.vy*DT;b.life-=DT;
+   if(!b.ig&&!(b.k==='msl'&&(t.fly||t.jump>0))&&inBlk(b.x,b.y)){S.fx.push({x:b.x,y:b.y,l:.15,k:b.k==='shell'||b.k==='msl'?'boom':'spark'});return false;}
+   if(Math.hypot(t.x-b.x,t.y-b.y)<(b.k==='shell'?14:b.k==='fl'?12:10)&&t.cur>0&&!(t.dash>0&&R()<.5)){ // 踏み込み中は半分回避
     damage(t,b.dmg,b);S.fx.push({x:b.x,y:b.y,l:b.k==='shell'?.35:.12,k:b.k==='shell'?'boom':'spark'});
     if(b.k==='shell'&&!S.done)log(`${b.o.nm}：砲弾命中`);
     return false;}
-   if(b.life<=0&&b.k==='shell')S.fx.push({x:b.x,y:b.y,l:.3,k:'boom'});
+   if(b.life<=0&&(b.k==='shell'||b.k==='msl'))S.fx.push({x:b.x,y:b.y,l:.3,k:'boom'});
    return b.life>0&&b.x>0&&b.x<AW&&b.y>0&&b.y<AH;});
   S.fx=S.fx.filter(f=>{f.l-=DT;if(f.vx){f.x+=f.vx*DT;f.y+=f.vy*DT;f.vx*=.93;f.vy*=.93;}return f.l>0;});
   if(!S.done&&S.t>=TLIM){S.done=true;S.end=S.t;S.win=S.me.cur/S.me.hp>S.en.cur/S.en.hp;log('>> 時間切れ。損傷比で判定');}
@@ -575,25 +700,28 @@ function drawArena(S){
  const fr=Math.floor(S.t*12)%2;
  [S.me,S.en].forEach((u,i)=>{
   if(u.cur<=0&&S.t>S.end+.3)return;
-  const o=i?S.me:S.en,flip=o.x<u.x,lift=u.fly?16+Math.round(Math.sin(S.t*5+i*2)*2):0;
-  if(u.fly){ctx.fillStyle='#0009';ctx.beginPath();ctx.ellipse(u.x+6,u.y+12,12,4,0,0,6.3);ctx.fill();}
+  const o=i?S.me:S.en,flip=o.x<u.x,lift=u.fly?16+Math.round(Math.sin(S.t*5+i*2)*2):u.jump>0?Math.round(Math.sin(Math.PI*Math.min(1,1-u.jump/u.jd))*14):0;
+  if(u.fly||lift>2){ctx.fillStyle='#0009';ctx.beginPath();ctx.ellipse(u.x+lift*.35,u.y+12,12,4,0,0,6.3);ctx.fill();}
   else if(u.inCover){ctx.strokeStyle='#d9a44166';ctx.strokeRect(u.x-15,u.y-15,30,30);}
   ctx.save();ctx.translate(Math.round(u.x),Math.round(u.y-lift));if(flip)ctx.scale(-1,1);
   ctx.drawImage(SPRC[i][fr],-32,-46);ctx.restore();
   if(u.flash>0){ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.beginPath();ctx.arc(u.x,u.y-lift-8,13,0,6.3);ctx.stroke();ctx.lineWidth=1;}
   ctx.fillStyle=i?'#d0503a':'#e0b04a';ctx.fillRect(u.x-2,u.y-lift-36,4,3);
+  if(u.smk>0){ctx.fillStyle='#9a968a55';for(let k=0;k<7;k++){const a=k*.9+S.t*.7,r=16+6*Math.sin(k*2.1+S.t);ctx.beginPath();ctx.arc(u.x+Math.cos(a)*r,u.y-10+Math.sin(a)*r*.7,9,0,6.3);ctx.fill();}}
  });
- S.bul.forEach(b=>{ctx.fillStyle=b.k==='shell'?'#ff8a2a':'#fff2b0';const s=b.k==='shell'?5:3;ctx.fillRect(b.x-s/2,b.y-s/2,s,s);
+ S.bul.forEach(b=>{if(b.k==='fl'){ctx.fillStyle=b.life>.25?'#ffd34acc':'#c0392bbb';const s=4+(.6-b.life)*10;ctx.fillRect(b.x-s/2,b.y-s/2,s,s);return;}
+  ctx.fillStyle=b.k==='shell'?'#ff8a2a':b.k==='msl'?'#f09e20':'#fff2b0';const s=b.k==='shell'?5:b.k==='msl'?4:3;ctx.fillRect(b.x-s/2,b.y-s/2,s,s);
   if(b.k==='bul'){ctx.strokeStyle='#ffd34aaa';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(b.x,b.y);ctx.lineTo(b.x-b.vx*.04,b.y-b.vy*.04);ctx.stroke();ctx.lineWidth=1;}});
  S.fx.forEach(f=>{
   if(f.k==='spark'){ctx.fillStyle='#fff';ctx.fillRect(f.x-2,f.y-2,4,4);}
+  else if(f.k==='trail'){ctx.fillStyle='#8a867a88';ctx.fillRect(f.x-2,f.y-2,3,3);}
   else if(f.k==='boom'||f.k==='ex'){ctx.fillStyle=f.l>.3?'#ffd34a':'#c0392b';const s=f.k==='ex'?5:10*(f.l/.35);ctx.fillRect(f.x-s/2,f.y-s/2,s,s);}
   else if(f.k==='slash'){ctx.strokeStyle='#e8eef4';ctx.lineWidth=2;ctx.beginPath();ctx.arc(f.x,f.y-6,16,-1.2,1.2);ctx.stroke();ctx.lineWidth=1;}
   else if(f.k==='dash'){ctx.strokeStyle='#e8eef488';ctx.beginPath();ctx.moveTo(f.x,f.y);ctx.lineTo(f.tx,f.ty);ctx.stroke();}
  });
  ctx.fillStyle='#a39c88';ctx.font='10px monospace';ctx.fillText('■ '+VENUES[G.venue].n,6,12);ctx.fillText(`T+${S.t.toFixed(1)}s  ${ACTN[S.me.act]} / ${ACTN[S.en.act]}`,6,AH-6);
  const wn=u=>u.b.ARMS?P[u.b.ARMS].n.replace(/.*「(.*)」/,'$1'):'内蔵機銃',ac=u=>u.shots?Math.round(Math.min(u.hits,u.shots)/u.shots*100)+'%':'─';
- $('binfo').innerHTML='<span class="h">項目</span><span class="h">自機</span><span class="h">敵機</span>'+[['方針',u=>progOf(u.tac).n],['ルール',u=>u.rule?'#'+u.rule:'─'],['武装',u=>wn(u)+(u.can?'＋肩砲':'')],['行動',u=>ACTN[u.act]],['命中',ac],['与ダメ',u=>Math.round(u.dealt)]].map(([l,fn])=>`<span>${l}</span><span>${fn(S.me)}</span><span>${fn(S.en)}</span>`).join('');
+ $('binfo').innerHTML='<span class="h">項目</span><span class="h">自機</span><span class="h">敵機</span>'+[['方針',u=>progOf(u.tac).n],['ルール',u=>u.rule?'#'+u.rule:'─'],['武装',u=>wn(u)+u.aux.map(k=>'＋'+AUXN[k]).join('')],['行動',u=>ACTN[u.act]],['命中',ac],['与ダメ',u=>Math.round(u.dealt)]].map(([l,fn])=>`<span>${l}</span><span>${fn(S.me)}</span><span>${fn(S.en)}</span>`).join('');
  $('hpMe').style.width=(S.me.cur/S.me.hp*100)+'%';$('hpEn').style.width=(S.en.cur/S.en.hp*100)+'%';
  $('hpMeT').textContent=Math.ceil(S.me.cur)+'/'+S.me.hp;$('hpEnT').textContent=Math.ceil(S.en.cur)+'/'+S.en.hp;
  const lg=S.logs.slice(S.fin&&S.res?-4:-5);if(S.fin&&S.res)lg.push(S.res);
@@ -610,8 +738,9 @@ function fight(){
   if(win){
    G.wins++;const mi=G.ladder.indexOf('YOU');G.ladder[mi]=r.id;G.ladder[rr-1]='YOU';
    const c=80+(16-rr)*10;G.cr+=c;res=`■ 勝利　${rr}位に昇格　報酬 ${c}cr`;
-   const notOwned=Object.keys(P).filter(k=>!G.owned.includes(k));
-   if(notOwned.length&&(r.boss||Math.random()<.5)){const n=pick(notOwned);G.owned.push(n);res+=`／獲得：${P[n].n}`;}
+   const first=!G.beat.includes(r.id),sg=r.sig.filter(k=>!G.owned.includes(k));
+   if(first&&sg.length){(r.boss?sg:sg.slice(0,1)).forEach(n=>{G.owned.push(n);res+=`／獲得：${P[n].n}`;});} // 初撃破：専用部品（門番は2つ）
+   else{const sg2=sg.length?sg:shopPool().filter(k=>!G.owned.includes(k));if(sg2.length&&Math.random()<.5){const n=pick(sg2);G.owned.push(n);res+=`／獲得：${P[n].n}`;}}
    if(!G.beat.includes(r.id))G.beat.push(r.id);
    if(r.boss&&VENUES[r.v+1])res+=`／会場「${VENUES[r.v+1].n}」解放`;
    if(rr===1)res+='／リーグ王者';
@@ -619,7 +748,7 @@ function fight(){
  }else if(win){
   G.wins++;const c=60+Math.floor(Math.random()*60)+EN.lv*10;G.cr+=c;
   res=`■ 任務完了　報酬 ${c}cr`;
-  const notOwned=Object.keys(P).filter(k=>!G.owned.includes(k));
+  const notOwned=shopPool().filter(k=>!G.owned.includes(k));
   if(notOwned.length&&Math.random()<0.5){const n=pick(notOwned);G.owned.push(n);res+=`／鹵獲：${P[n].n}`;}
  }else{G.loss++;G.cr+=15;res='■ 任務失敗　回収手当 15cr';}
  G.last={en:EN.name,win,turns:H.end.toFixed(1)+'秒',hp:Math.ceil(H.me.cur)+'/'+H.me.hp,note:res.replace('■ ','')+'（方針：'+progOf(G.tac).n+'）'};save();
@@ -652,8 +781,8 @@ function loop(now){
 function toggleSpd(){SPEED=SPEED===1?2:1;$('btnSpd').textContent=SPEED===2?'等倍速':'2倍速';}
 function skipBattle(){if(!SIM||SIM.fin)return;while(!SIM.fin)SIM.step();}
 function gacha(){
- const notOwned=Object.keys(P).filter(k=>!G.owned.includes(k));
- if(!notOwned.length){$('homeMsg').textContent='全パーツ所持済み！';return;}
+ const notOwned=shopPool().filter(k=>!G.owned.includes(k));
+ if(!notOwned.length){$('homeMsg').textContent=Object.keys(P).every(k=>G.owned.includes(k))?'全パーツ所持済み！':'闇市の在庫切れ。ライバルを倒すか次の会場を開こう';return;}
  if(G.cr<100){$('homeMsg').textContent='クレジット不足';return;}
  G.cr-=100;const n=pick(notOwned);G.owned.push(n);save();render();$('homeMsg').textContent='調達：'+P[n].n;
 }
