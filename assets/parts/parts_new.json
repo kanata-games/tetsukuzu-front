@@ -1,0 +1,475 @@
+{
+ "canvas": [
+  64,
+  64
+ ],
+ "view": "front",
+ "origin": "top-left (px)",
+ "how_to_assemble": "全パーツは組立済みの位置に描いてある。各PNGを(0,0)に layerOrder の順で重ねるだけで組み上がる。L/R は画面上の左右（見る側から見て）。",
+ "anchors": {
+  "neck": [
+   32,
+   22
+  ],
+  "shoulderL": [
+   20,
+   26
+  ],
+  "shoulderR": [
+   44,
+   26
+  ],
+  "waist": [
+   32,
+   44
+  ],
+  "back": [
+   32,
+   28
+  ],
+  "mountL": [
+   20,
+   21
+  ],
+  "mountR": [
+   44,
+   21
+  ],
+  "rotorHub": [
+   32,
+   4
+  ],
+  "bodyCenter": [
+   32,
+   34
+  ]
+ },
+ "anchor_notes": {
+  "neck": "頭の下端中央（頭はy=22付近で胴の襟に重なる）",
+  "shoulderL/R": "腕の肩関節の中心。全胴体が同じ位置にソケットを持つ",
+  "waist": "脚の腰ブロック上端中央（胴の腰はy=45まで、脚はy=43から重なる）",
+  "back": "背中装備の取付基準",
+  "mountL/R": "肩装備の取付基準（肩アーマーの上）",
+  "rotorHub": "背中回転翼のハブ中心"
+ },
+ "layerOrder": [
+  "back",
+  "legs",
+  "body",
+  "arms",
+  "head",
+  "shoulder"
+ ],
+ "slots": {
+  "body": "1つ必須",
+  "head": "1つ必須",
+  "arms": "1つ必須（左右セット1枚）",
+  "legs": "1つ必須",
+  "back": "背中装備 0〜1（kirisame/zawameki/hyoutan/ootonbo/hayabusa）",
+  "shoulderL": "左肩装備（tatami）。ゲームでは肩スロットに付けると反転して右肩へ",
+  "shoulderR": "右肩装備（karasuodoshi/yamabachi）。背スロットに付けると反転して左肩へ"
+ },
+ "palette": [
+  "#0e0f14",
+  "#181a21",
+  "#24272f",
+  "#383d48",
+  "#535a68",
+  "#747d8c",
+  "#9ca6b4",
+  "#ccd4dc",
+  "#282d1b",
+  "#424a2a",
+  "#616b3c",
+  "#889456",
+  "#3c1f15",
+  "#6c3520",
+  "#9c562a",
+  "#c68040",
+  "#7c3c0c",
+  "#f09e20",
+  "#ffe28c"
+ ],
+ "version": "v0.7 new parts (28 parts / 30 files)",
+ "parts": [
+  {
+   "id": "body_tochika",
+   "gameId": "B4",
+   "category": "body",
+   "slot": "body",
+   "layer": "body",
+   "name_ja": "戦車コア「トーチカ」",
+   "name_en": "Tank Core \"Tochika\"",
+   "frames": 1,
+   "files": [
+    "body_tochika.png"
+   ]
+  },
+  {
+   "id": "body_jorou",
+   "gameId": "B5",
+   "category": "body",
+   "slot": "body",
+   "layer": "body",
+   "name_ja": "蜘蛛コア「ジョロウ」",
+   "name_en": "Spider Core \"Jorou\"",
+   "frames": 1,
+   "files": [
+    "body_jorou.png"
+   ]
+  },
+  {
+   "id": "body_honegara",
+   "gameId": "B6",
+   "category": "body",
+   "slot": "body",
+   "layer": "body",
+   "name_ja": "骨組コア「ホネガラ」",
+   "name_en": "Frame Core \"Honegara\"",
+   "frames": 1,
+   "files": [
+    "body_honegara.png"
+   ]
+  },
+  {
+   "id": "body_tsuzura",
+   "gameId": "B7",
+   "category": "body",
+   "slot": "body",
+   "layer": "body",
+   "name_ja": "装甲箱コア「ツヅラ」",
+   "name_en": "Armored Crate Core \"Tsuzura\"",
+   "frames": 1,
+   "files": [
+    "body_tsuzura.png"
+   ]
+  },
+  {
+   "id": "head_yatsume",
+   "gameId": "H5",
+   "category": "head",
+   "slot": "head",
+   "layer": "head",
+   "name_ja": "多眼ヘッド「ヤツメ」",
+   "name_en": "Multi-eye Head \"Yatsume\"",
+   "frames": 1,
+   "files": [
+    "head_yatsume.png"
+   ]
+  },
+  {
+   "id": "head_sudare",
+   "gameId": "H6",
+   "category": "head",
+   "slot": "head",
+   "layer": "head",
+   "name_ja": "遮光ヘッド「スダレ」",
+   "name_en": "Louvered Head \"Sudare\"",
+   "frames": 1,
+   "files": [
+    "head_sudare.png"
+   ]
+  },
+  {
+   "id": "head_donguri",
+   "gameId": "H7",
+   "category": "head",
+   "slot": "head",
+   "layer": "head",
+   "name_ja": "電探ヘッド「ドングリ」",
+   "name_en": "Radome Head \"Donguri\"",
+   "frames": 1,
+   "files": [
+    "head_donguri.png"
+   ]
+  },
+  {
+   "id": "head_takanome",
+   "gameId": "H8",
+   "category": "head",
+   "slot": "head",
+   "layer": "head",
+   "name_ja": "狙撃眼ヘッド「タカノメ」",
+   "name_en": "Sniper-eye Head \"Takanome\"",
+   "frames": 1,
+   "files": [
+    "head_takanome.png"
+   ]
+  },
+  {
+   "id": "arm_mozu",
+   "gameId": "A4",
+   "category": "arms",
+   "slot": "arms",
+   "layer": "arms",
+   "name_ja": "狙撃銃腕「モズ」",
+   "name_en": "Sniper Arms \"Mozu\"",
+   "frames": 1,
+   "files": [
+    "arm_mozu.png"
+   ]
+  },
+  {
+   "id": "arm_kagaribi",
+   "gameId": "A5",
+   "category": "arms",
+   "slot": "arms",
+   "layer": "arms",
+   "name_ja": "火炎放射腕「カガリビ」",
+   "name_en": "Flamethrower Arms \"Kagaribi\"",
+   "frames": 1,
+   "files": [
+    "arm_kagaribi.png"
+   ]
+  },
+  {
+   "id": "arm_hachinosu",
+   "gameId": "A6",
+   "category": "arms",
+   "slot": "arms",
+   "layer": "arms",
+   "name_ja": "噴進弾腕「ハチノス」",
+   "name_en": "Rocket Pod Arms \"Hachinosu\"",
+   "frames": 1,
+   "files": [
+    "arm_hachinosu.png"
+   ]
+  },
+  {
+   "id": "arm_gennou",
+   "gameId": "A7",
+   "category": "arms",
+   "slot": "arms",
+   "layer": "arms",
+   "name_ja": "鉄拳腕「ゲンノウ」",
+   "name_en": "Pile Fist Arms \"Gennou\"",
+   "frames": 1,
+   "files": [
+    "arm_gennou.png"
+   ]
+  },
+  {
+   "id": "arm_tsubakuro",
+   "gameId": "A8",
+   "category": "arms",
+   "slot": "arms",
+   "layer": "arms",
+   "name_ja": "双短機銃腕「ツバクロ」",
+   "name_en": "Twin SMG Arms \"Tsubakuro\"",
+   "frames": 1,
+   "files": [
+    "arm_tsubakuro.png"
+   ]
+  },
+  {
+   "id": "arm_hibashi",
+   "gameId": "A9",
+   "category": "arms",
+   "slot": "arms",
+   "layer": "arms",
+   "name_ja": "熱線腕「ヒバシ」",
+   "name_en": "Heat Ray Arms \"Hibashi\"",
+   "frames": 1,
+   "files": [
+    "arm_hibashi.png"
+   ]
+  },
+  {
+   "id": "leg_batta",
+   "gameId": "L4",
+   "category": "legs",
+   "slot": "legs",
+   "layer": "legs",
+   "name_ja": "逆関節「バッタ」",
+   "name_en": "Reverse-joint Legs \"Batta\"",
+   "frames": 1,
+   "files": [
+    "leg_batta.png"
+   ]
+  },
+  {
+   "id": "leg_komainu",
+   "gameId": "L5",
+   "category": "legs",
+   "slot": "legs",
+   "layer": "legs",
+   "name_ja": "四脚「コマイヌ」",
+   "name_en": "Quad Legs \"Komainu\"",
+   "frames": 1,
+   "files": [
+    "leg_komainu.png"
+   ]
+  },
+  {
+   "id": "leg_zatou",
+   "gameId": "L6",
+   "category": "legs",
+   "slot": "legs",
+   "layer": "legs",
+   "name_ja": "多脚「ザトウ」",
+   "name_en": "Multi Legs \"Zatou\"",
+   "frames": 1,
+   "files": [
+    "leg_zatou.png"
+   ]
+  },
+  {
+   "id": "leg_koro",
+   "gameId": "L7",
+   "category": "legs",
+   "slot": "legs",
+   "layer": "legs",
+   "name_ja": "車輪「コロ」",
+   "name_en": "Wheel Legs \"Koro\"",
+   "frames": 1,
+   "files": [
+    "leg_koro.png"
+   ]
+  },
+  {
+   "id": "leg_daidara",
+   "gameId": "L8",
+   "category": "legs",
+   "slot": "legs",
+   "layer": "legs",
+   "name_ja": "重履帯「ダイダラ」",
+   "name_en": "Heavy Tracks \"Daidara\"",
+   "frames": 1,
+   "files": [
+    "leg_daidara.png"
+   ]
+  },
+  {
+   "id": "leg_haneashi",
+   "gameId": "L9",
+   "category": "legs",
+   "slot": "legs",
+   "layer": "legs",
+   "name_ja": "跳躍脚「ハネアシ」",
+   "name_en": "Jump Legs \"Haneashi\"",
+   "frames": 1,
+   "files": [
+    "leg_haneashi.png"
+   ]
+  },
+  {
+   "id": "equip_karasuodoshi",
+   "gameId": "X6",
+   "category": "equip",
+   "slot": "shoulderR",
+   "layer": "shoulder",
+   "name_ja": "対空砲「カラスオドシ」",
+   "name_en": "AA Gun \"Karasuodoshi\"",
+   "frames": 1,
+   "files": [
+    "equip_karasuodoshi.png"
+   ]
+  },
+  {
+   "id": "equip_yamabachi",
+   "gameId": "X7",
+   "category": "equip",
+   "slot": "shoulderR",
+   "layer": "shoulder",
+   "name_ja": "噴進弾「ヤマバチ」",
+   "name_en": "Missile Pod \"Yamabachi\"",
+   "frames": 1,
+   "files": [
+    "equip_yamabachi.png"
+   ]
+  },
+  {
+   "id": "equip_kirisame",
+   "gameId": "X8",
+   "category": "equip",
+   "slot": "back",
+   "layer": "back",
+   "name_ja": "煙幕「キリサメ」",
+   "name_en": "Smoke Launcher \"Kirisame\"",
+   "frames": 1,
+   "files": [
+    "equip_kirisame.png"
+   ]
+  },
+  {
+   "id": "equip_zawameki",
+   "gameId": "X9",
+   "category": "equip",
+   "slot": "back",
+   "layer": "back",
+   "name_ja": "妨害器「ザワメキ」",
+   "name_en": "Jammer \"Zawameki\"",
+   "frames": 2,
+   "files": [
+    "equip_zawameki_1.png",
+    "equip_zawameki_2.png"
+   ],
+   "fps": 12,
+   "loop": true,
+   "anim": "blink"
+  },
+  {
+   "id": "equip_tatami",
+   "gameId": "X10",
+   "category": "equip",
+   "slot": "shoulderL",
+   "layer": "shoulder",
+   "name_ja": "増加装甲「タタミ」",
+   "name_en": "Add-on Armor \"Tatami\"",
+   "frames": 1,
+   "files": [
+    "equip_tatami.png"
+   ]
+  },
+  {
+   "id": "equip_hyoutan",
+   "gameId": "X11",
+   "category": "equip",
+   "slot": "back",
+   "layer": "back",
+   "name_ja": "増槽「ヒョウタン」",
+   "name_en": "Drop Tanks \"Hyoutan\"",
+   "frames": 1,
+   "files": [
+    "equip_hyoutan.png"
+   ]
+  },
+  {
+   "id": "equip_ootonbo",
+   "gameId": "X12",
+   "category": "equip",
+   "slot": "back",
+   "layer": "back",
+   "name_ja": "大型回転翼「オオトンボ」",
+   "name_en": "Heavy Rotor \"Ootonbo\"",
+   "frames": 2,
+   "files": [
+    "equip_ootonbo_1.png",
+    "equip_ootonbo_2.png"
+   ],
+   "fps": 12,
+   "loop": true,
+   "anim": "spin"
+  },
+  {
+   "id": "equip_hayabusa",
+   "gameId": "X13",
+   "category": "equip",
+   "slot": "back",
+   "layer": "back",
+   "name_ja": "噴進翼「ハヤブサ」",
+   "name_en": "Jet Wings \"Hayabusa\"",
+   "frames": 1,
+   "files": [
+    "equip_hayabusa.png"
+   ]
+  }
+ ],
+ "notes": [
+  "parts.json と同じ規約。gameId は index.html の部品ID（B4〜X13）。",
+  "2コマのパーツ（equip_zawameki=表示灯の点滅, equip_ootonbo=回転）は files を12fpsで交互に。",
+  "反転して使う場合は左右反転＋1px右（x→64-x）で全アンカーが一致。",
+  "equip_ootonbo は仕様どおり画面幅いっぱい（x1〜63）なので右端の輪郭が x=63 に接する。",
+  "leg_haneashi の _2（炎を伸ばす任意コマ）は作っていない。1枚のみ。"
+ ]
+}

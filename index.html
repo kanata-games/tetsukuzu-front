@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>鉄屑戦線 v0.7</title>
+<title>鉄屑戦線 v0.7.1</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;background:#0b0c0b;color:#c9c4b4;font-family:"BIZ UDGothic","Osaka-Mono",ui-monospace,"Noto Sans Mono CJK JP",monospace;font-size:15px;-webkit-tap-highlight-color:transparent}
@@ -156,7 +156,7 @@ button,.stats,.inv,.log,canvas{border-radius:3px!important}
   <div id="resOv"><div class="rt" id="resTxt"></div><div class="row"><button class="pri" id="btnOvHome" onclick="go('home')">格納庫へ帰投</button><button id="btnOvRank" onclick="go('rank')">順位表へ</button></div></div>
  </section>
 </main>
-<footer>制作：清掃員工房 ／ カナタゲームズ　v0.7</footer>
+<footer>制作：清掃員工房 ／ カナタゲームズ　v0.7.1</footer>
 </div>
 <script src="assets/parts/manifest.js"></script>
 <script>
@@ -363,7 +363,7 @@ const hasPropB=b=>[b.SHOULDER,b.BACK].some(id=>id&&P[id].spr==='prop')||b.HEAD==
 const pimg=(id,f)=>{const a=PIMG[id];return a?(IMG[a[(f||0)%a.length]]||IMG[a[0]]):null;};
 const artReady=b=>Object.values(b).every(id=>!id||pimg(id,0)||FX[id]);
 function drawArt(ctx,b,f,arena){
- const st=calc(b),dy=b.LEGS?0:(st.canFly?-4:12); // 脚なし：飛行なら浮かせて影、地上なら接地
+ const st=calc(b),dy=b.LEGS?0:(st.canFly?0:12); // 飛行機は持ち上げない（大型回転翼が上端で切れるため。浮遊感は影で表現） // 脚なし：飛行なら浮かせて影、地上なら接地
  if(!arena&&!b.LEGS&&st.canFly){ctx.fillStyle='#0007';ctx.beginPath();ctx.ellipse(32,59,13,3,0,0,6.3);ctx.fill();}
  const put=(im,flip,id)=>{if(!im){if(id&&FX[id])drawFX(ctx,id,f||0,flip,dy);return;}if(flip){ctx.save();ctx.translate(65,dy);ctx.scale(-1,1);ctx.drawImage(im,0,0);ctx.restore();}else ctx.drawImage(im,0,dy);};
  [b.BACK,b.SHOULDER].forEach(id=>{if(id&&AKIND[id]==='back')put(pimg(id,f),false,id);});
