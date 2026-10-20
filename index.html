@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>鉄屑戦線 v0.8.1</title>
+<title>鉄屑戦線 v0.8.2</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;background:#0b0c0b;color:#c9c4b4;font-family:"BIZ UDGothic","Osaka-Mono",ui-monospace,"Noto Sans Mono CJK JP",monospace;font-size:15px;-webkit-tap-highlight-color:transparent}
@@ -47,6 +47,8 @@ button:disabled{opacity:.4}
 @media (max-height:760px){#s-battle #binfo{display:none}#s-battle .log{height:74px}}
 .intro{border:1px solid #5a2a22;background:#1a1210;padding:6px 8px;margin:4px 0;font-size:12px;color:#c9b98a}.intro .q{color:#e8dcc0;font-size:13px}.cs{display:inline-block;width:12px;height:12px;vertical-align:-1px;margin-right:4px;border:1px solid #000}
 .tacrow{display:flex;align-items:center;justify-content:space-between;gap:6px;border:1px solid #2a2823;background:#131411;padding:4px 8px;font-size:13px;margin:4px 0}.tacrow button{flex:none;padding:5px 10px;font-size:12px}#tacSel{display:none}#tacSel.on{display:block}#tacSel .row button{padding:7px 2px;font-size:12px}
+.pslist{display:grid;grid-template-columns:1fr 1fr;gap:4px}.psc{border:1px solid #2a2823;background:#131411;padding:4px;display:flex;flex-direction:column;gap:3px;font-size:11px}.psc .top{display:flex;align-items:center;gap:4px;min-height:40px}.psc canvas,.psrow canvas{width:40px;height:40px;image-rendering:pixelated;flex:none;background:#0d0e0b}.psc .nm{flex:1;min-width:0;overflow:hidden;color:#c9b98a;line-height:1.3}.psc .nm small{color:#7d7868}.psc .bt{display:flex;gap:3px}.psc .bt button{flex:1;padding:5px 0;font-size:11px}
+.psrow{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:4px 0}.psrow button{display:flex;flex-direction:column;align-items:center;padding:3px 2px;font-size:10px;gap:1px;min-width:0}.psrow button span{max-width:100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.pschk{font-size:12px;color:#a39c88;display:flex;align-items:center;gap:4px;margin:2px 0}
 .pr{display:flex;align-items:center;gap:3px;background:#131411;border:1px solid #2a2823;padding:3px}.pr .no{width:1.3em;color:#d9a441;text-align:center;font-size:12px}
 .pr select{flex:1;min-width:0;font:inherit;font-size:12px;background:#1b1c19;color:#d8d2c0;border:1px solid #4a463c;border-radius:3px;padding:6px 2px}
 .pr .th{color:#7d7868;font-size:12px}.pr .pc{flex:1;font-size:12px;color:#a39c88;padding-left:4px}.pr button{padding:5px 7px;font-size:12px;flex:none}
@@ -78,6 +80,8 @@ button,.stats,.inv,.log,canvas{border-radius:3px!important}
   <div class="inv" id="brief"></div>
   <div class="tacrow"><span>行動方針：<b id="tacHome"></b></span><button id="btnTacHome" onclick="$('tacSel').classList.toggle('on')">変更 ▾</button></div>
   <div id="tacSel"><div class="row" id="tacH1"></div><div class="row" id="tacH2"></div></div>
+  <div class="psrow" id="psHome"></div>
+  <div class="warnTxt" id="psMsgH"></div>
   <div class="row"><button class="pri" onclick="go('rank')">▶ リーグ戦</button><button class="pri" onclick="go('venue')">▶ 会場移動</button></div>
   <div class="row"><button onclick="go('asm')">▶ 機体組立</button><button onclick="go('sortie')">▶ フリー出撃</button></div>
   <div class="row"><button onclick="gacha()">闇市で部品調達 (100cr)</button><button class="warn" onclick="resetAll()">データ初期化</button></div>
@@ -95,6 +99,10 @@ button,.stats,.inv,.log,canvas{border-radius:3px!important}
   <div class="slots" id="slots"></div>
   <div class="hd">■ 機体性能</div>
   <div class="bars" id="bars"></div>
+  <div class="hd">■ 機体プリセット</div>
+  <label class="pschk"><input type="checkbox" id="psTac" checked> 行動方針も一緒に保存</label>
+  <div class="pslist" id="psAsm"></div>
+  <div class="warnTxt" id="psMsg"></div>
   <button onclick="go('home')">← 格納庫へ戻る</button>
   <div class="panel" id="pick">
    <div class="role" id="pickTitle"></div>
@@ -161,7 +169,7 @@ button,.stats,.inv,.log,canvas{border-radius:3px!important}
   <div id="resOv"><div class="rt" id="resTxt"></div><div class="row"><button class="pri" id="btnOvHome" onclick="go('home')">格納庫へ帰投</button><button id="btnOvRank" onclick="go('rank')">順位表へ</button></div></div>
  </section>
 </main>
-<footer>制作：清掃員工房 ／ カナタゲームズ　v0.8.1</footer>
+<footer>制作：清掃員工房 ／ カナタゲームズ　v0.8.2</footer>
 </div>
 <script src="assets/parts/manifest.js"></script>
 <script>
@@ -272,7 +280,7 @@ function load(){try{G=JSON.parse(localStorage.getItem(KEY))}catch(e){G=null}if(!
  if(!Array.isArray(G.ladder)||G.ladder.length!==gl.length+1)G.ladder=[...gl,'YOU'];
  if(!Array.isArray(G.lad0)||G.lad0.length!==l0.length+1)G.lad0=[...l0,'YOU'];
  if(typeof G.venue!=='number')G.venue=0;if(!Array.isArray(G.beat))G.beat=[];
- if(!Array.isArray(G.progs)||G.progs.length!==3)G.progs=['rush','cover','evade'].map(k=>TACTICS[k].rules.map(r=>({c:r.c,a:r.a})));G.ver=8;}
+ if(!Array.isArray(G.progs)||G.progs.length!==3)G.progs=['rush','cover','evade'].map(k=>TACTICS[k].rules.map(r=>({c:r.c,a:r.a})));if(!Array.isArray(G.presets)||G.presets.length!==4)G.presets=[null,null,null,null];G.ver=9;}
 function save(){localStorage.setItem(KEY,JSON.stringify(G));}
 
 // ---- stats ----
@@ -414,7 +422,7 @@ function draw(cv,b,f,arena,col){
 const $=id=>document.getElementById(id);
 function statHTML(s){return `<div>耐久<b>${s.hp}</b></div><div>装甲<b>${s.arm}</b></div><div>攻撃<b>${s.atk}</b></div><div>機動<b>${s.mob}</b></div><div>飛行<b>${s.fly}${s.canFly?'✈':''}</b></div><div>重量<b style="color:${s.over?'#d0503a':'#c9b98a'}">${s.wt}/${s.cap}</b></div>`;}
 function render(){
- $('cr').textContent=G.cr+' cr';renderTacHome();
+ $('cr').textContent=G.cr+' cr';renderTacHome();renderPresets();
  const s=calc(G.build);
  draw($('cvHome'),G.build);draw($('cvAsm'),G.build);
  $('roleHome').textContent=$('roleAsm').textContent='【'+s.role+'】';
@@ -580,6 +588,22 @@ const TMOD={rush:{dmg:1.0,def:1},kite:{dmg:.9,def:1},cover:{dmg:1.1,def:1},evade
 const PSLOT=['p0','p1','p2'],PSN=['自作A','自作B','自作C'];
 function progOf(tac){if(TACTICS[tac])return TACTICS[tac];const i=PSLOT.indexOf(tac);if(i>=0&&G.progs&&G.progs[i])return{n:PSN[i],d:'自作プログラム',rules:G.progs[i]};if(RPROG[tac])return RPROG[tac];return TACTICS.rush;}
 function decide(u,v){const R=progOf(u.tac).rules;for(let i=0;i<R.length;i++){const r=R[i];if(i===R.length-1||!r.c||(COND[r.c]&&COND[r.c].f(v)))return[r.a,i+1];}return['hold',0];}
+// ---- 機体プリセット（4枠：構成＋任意で行動方針）----
+function renderPresets(){
+ const card=(p,i)=>`<div class="psc" data-ps-slot="${i}"><div class="top"><canvas width="64" height="64" id="psc${i}"></canvas><div class="nm">${p?`${p.name}<br><small>${p.tac?'方針：'+progOf(p.tac).n:'方針なし'}</small>`:`<small>機体プリセット${i+1}<br>（空き）</small>`}</div></div>
+  <div class="bt"><button data-psave="${i}" onclick="psSave(${i})">保存</button><button data-pload="${i}" onclick="psLoad(${i})" ${p?'':'disabled'}>呼出</button><button data-pren="${i}" onclick="psRename(${i})" ${p?'':'disabled'}>名前</button></div></div>`;
+ $('psAsm').innerHTML=G.presets.map(card).join('');
+ $('psHome').innerHTML=G.presets.map((p,i)=>`<button data-phome="${i}" onclick="psLoad(${i},1)" ${p?'':'disabled'}><canvas width="64" height="64" id="psh${i}"></canvas><span>${p?p.name:'P'+(i+1)+' 空き'}</span></button>`).join('');
+ G.presets.forEach((p,i)=>{[$('psc'+i),$('psh'+i)].forEach(c=>{if(!c)return;if(p)draw(c,p.build,0,true);else c.getContext('2d').clearRect(0,0,64,64);});});
+}
+function psSave(i){const old=G.presets[i];if(old&&!confirm(`「${old.name}」に上書きしますか？`))return;
+ const tac=$('psTac').checked?G.tac:null;G.presets[i]={name:old&&old.custom?old.name:calc(G.build).role,custom:!!(old&&old.custom),build:{...G.build},tac};save();render();$('psMsg').textContent=`プリセット${i+1}に保存：${G.presets[i].name}`;}
+function psRename(i){const p=G.presets[i];if(!p)return;const n=prompt('プリセット名（12文字まで）',p.name);if(n==null)return;const t=n.trim().slice(0,12);if(!t)return;p.name=t;p.custom=true;save();render();}
+function psLoad(i,home){const p=G.presets[i];if(!p)return;const miss=[];const nb={...G.build};
+ for(const [k] of SLOTS){const id=p.build[k];if(id&&!G.owned.includes(id)){miss.push(P[id].n);if(k!=='BODY')nb[k]=null;}else nb[k]=k==='BODY'&&!id?G.build.BODY:id;}
+ if(nb.SHOULDER&&nb.SHOULDER===nb.BACK)nb.BACK=null;G.build=nb;
+ if(p.tac&&(TACTICS[p.tac]||PSLOT.includes(p.tac)))G.tac=p.tac;save();render();renderTac();
+ const msg=`「${p.name}」を呼び出し`+(miss.length?`　⚠ 未所持のため外した部品：${miss.join('、')}`:'');$(home?'psMsgH':'psMsg').textContent=msg;}
 function setTac(k){G.tac=k;save();renderTac();}
 let PRET='sortie';
 function renderTacHome(){if(!$('tacHome'))return;$('tacHome').textContent=progOf(G.tac).n;
