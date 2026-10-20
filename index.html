@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>鉄屑戦線 v0.8</title>
+<title>鉄屑戦線 v0.8.1</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;background:#0b0c0b;color:#c9c4b4;font-family:"BIZ UDGothic","Osaka-Mono",ui-monospace,"Noto Sans Mono CJK JP",monospace;font-size:15px;-webkit-tap-highlight-color:transparent}
@@ -46,6 +46,7 @@ button:disabled{opacity:.4}
 #resOv.on{display:block}#resOv .rt{font-weight:bold;margin-bottom:8px;line-height:1.5;font-size:14px}
 @media (max-height:760px){#s-battle #binfo{display:none}#s-battle .log{height:74px}}
 .intro{border:1px solid #5a2a22;background:#1a1210;padding:6px 8px;margin:4px 0;font-size:12px;color:#c9b98a}.intro .q{color:#e8dcc0;font-size:13px}.cs{display:inline-block;width:12px;height:12px;vertical-align:-1px;margin-right:4px;border:1px solid #000}
+.tacrow{display:flex;align-items:center;justify-content:space-between;gap:6px;border:1px solid #2a2823;background:#131411;padding:4px 8px;font-size:13px;margin:4px 0}.tacrow button{flex:none;padding:5px 10px;font-size:12px}#tacSel{display:none}#tacSel.on{display:block}#tacSel .row button{padding:7px 2px;font-size:12px}
 .pr{display:flex;align-items:center;gap:3px;background:#131411;border:1px solid #2a2823;padding:3px}.pr .no{width:1.3em;color:#d9a441;text-align:center;font-size:12px}
 .pr select{flex:1;min-width:0;font:inherit;font-size:12px;background:#1b1c19;color:#d8d2c0;border:1px solid #4a463c;border-radius:3px;padding:6px 2px}
 .pr .th{color:#7d7868;font-size:12px}.pr .pc{flex:1;font-size:12px;color:#a39c88;padding-left:4px}.pr button{padding:5px 7px;font-size:12px;flex:none}
@@ -75,6 +76,8 @@ button,.stats,.inv,.log,canvas{border-radius:3px!important}
   <div class="stats" id="statHome"></div>
   <div class="hd">■ リーグ戦況</div>
   <div class="inv" id="brief"></div>
+  <div class="tacrow"><span>行動方針：<b id="tacHome"></b></span><button id="btnTacHome" onclick="$('tacSel').classList.toggle('on')">変更 ▾</button></div>
+  <div id="tacSel"><div class="row" id="tacH1"></div><div class="row" id="tacH2"></div></div>
   <div class="row"><button class="pri" onclick="go('rank')">▶ リーグ戦</button><button class="pri" onclick="go('venue')">▶ 会場移動</button></div>
   <div class="row"><button onclick="go('asm')">▶ 機体組立</button><button onclick="go('sortie')">▶ フリー出撃</button></div>
   <div class="row"><button onclick="gacha()">闇市で部品調達 (100cr)</button><button class="warn" onclick="resetAll()">データ初期化</button></div>
@@ -158,7 +161,7 @@ button,.stats,.inv,.log,canvas{border-radius:3px!important}
   <div id="resOv"><div class="rt" id="resTxt"></div><div class="row"><button class="pri" id="btnOvHome" onclick="go('home')">格納庫へ帰投</button><button id="btnOvRank" onclick="go('rank')">順位表へ</button></div></div>
  </section>
 </main>
-<footer>制作：清掃員工房 ／ カナタゲームズ　v0.8</footer>
+<footer>制作：清掃員工房 ／ カナタゲームズ　v0.8.1</footer>
 </div>
 <script src="assets/parts/manifest.js"></script>
 <script>
@@ -411,7 +414,7 @@ function draw(cv,b,f,arena,col){
 const $=id=>document.getElementById(id);
 function statHTML(s){return `<div>耐久<b>${s.hp}</b></div><div>装甲<b>${s.arm}</b></div><div>攻撃<b>${s.atk}</b></div><div>機動<b>${s.mob}</b></div><div>飛行<b>${s.fly}${s.canFly?'✈':''}</b></div><div>重量<b style="color:${s.over?'#d0503a':'#c9b98a'}">${s.wt}/${s.cap}</b></div>`;}
 function render(){
- $('cr').textContent=G.cr+' cr';
+ $('cr').textContent=G.cr+' cr';renderTacHome();
  const s=calc(G.build);
  draw($('cvHome'),G.build);draw($('cvAsm'),G.build);
  $('roleHome').textContent=$('roleAsm').textContent='【'+s.role+'】';
@@ -578,15 +581,20 @@ const PSLOT=['p0','p1','p2'],PSN=['自作A','自作B','自作C'];
 function progOf(tac){if(TACTICS[tac])return TACTICS[tac];const i=PSLOT.indexOf(tac);if(i>=0&&G.progs&&G.progs[i])return{n:PSN[i],d:'自作プログラム',rules:G.progs[i]};if(RPROG[tac])return RPROG[tac];return TACTICS.rush;}
 function decide(u,v){const R=progOf(u.tac).rules;for(let i=0;i<R.length;i++){const r=R[i];if(i===R.length-1||!r.c||(COND[r.c]&&COND[r.c].f(v)))return[r.a,i+1];}return['hold',0];}
 function setTac(k){G.tac=k;save();renderTac();}
-function renderTac(){
+let PRET='sortie';
+function renderTacHome(){if(!$('tacHome'))return;$('tacHome').textContent=progOf(G.tac).n;
+ $('tacH1').innerHTML=Object.entries(TACTICS).map(([k,t])=>`<button data-htac="${k}" class="${G.tac===k?'pri':''}" onclick="setTac('${k}')">${t.n}</button>`).join('');
+ $('tacH2').innerHTML=PSLOT.map((k,i)=>`<button data-htac="${k}" class="${G.tac===k?'pri':''}" onclick="setTac('${k}')">${PSN[i]}</button>`).join('')+`<button onclick="PRET='home';openProg()">✎ 編集</button>`;}
+function renderTac(){renderTacHome();
  $('tacs').innerHTML=Object.entries(TACTICS).map(([k,t])=>`<button data-tac="${k}" class="${G.tac===k?'pri':''}" onclick="setTac('${k}')">${t.n}</button>`).join('');
- $('tacs2').innerHTML=PSLOT.map((k,i)=>`<button data-tac="${k}" class="${G.tac===k?'pri':''}" onclick="setTac('${k}')">${PSN[i]}</button>`).join('')+`<button onclick="openProg()">✎ 編集</button>`;
+ $('tacs2').innerHTML=PSLOT.map((k,i)=>`<button data-tac="${k}" class="${G.tac===k?'pri':''}" onclick="setTac('${k}')">${PSN[i]}</button>`).join('')+`<button onclick="PRET='sortie';openProg()">✎ 編集</button>`;
  $('tacDesc').textContent='行動方針：'+progOf(G.tac).d;
 }
 // ---- プログラム編集 ----
 let PE=0;
 function openProg(){PE=Math.max(0,PSLOT.indexOf(G.tac));go('prog',true);renderProg();}
 function renderProg(){
+ $('btnUseProg').textContent=PRET==='home'?'▶ このプログラムを使う（格納庫へ）':'▶ このプログラムで出撃準備へ';
  const R=G.progs[PE];
  $('pslots').innerHTML=PSN.map((n,i)=>`<button data-ps="${i}" class="${PE===i?'pri':''}" onclick="PE=${i};renderProg()">${n}</button>`).join('');
  const co=c=>Object.entries(COND).filter(([k])=>k!=='always').map(([k,o])=>`<option value="${k}"${k===c?' selected':''}>${o.n}</option>`).join('');
@@ -600,7 +608,7 @@ function mvRule(i,d){const R=G.progs[PE],j=i+d;if(j<0||j>=R.length-1)return;[R[i
 function delRule(i){G.progs[PE].splice(i,1);save();renderProg();}
 function addRule(){const R=G.progs[PE];if(R.length>=8)return;R.splice(R.length-1,0,{c:'near',a:'orbit'});save();renderProg();}
 function loadPreset(k){G.progs[PE]=TACTICS[k].rules.map(r=>({c:r.c,a:r.a}));if(G.progs[PE].length)G.progs[PE][G.progs[PE].length-1].c=null;save();renderProg();}
-function useProg(){G.tac=PSLOT[PE];save();go('sortie',true);showEnemy();}
+function useProg(){G.tac=PSLOT[PE];save();if(PRET==='home'){PRET='sortie';go('home');return;}go('sortie',true);showEnemy();}
 // ---- 2D戦場シミュレーション（固定刻み・シード付き乱数＝スキップしても同じ結果）----
 let ACTSPD={charge:1.4,retreat:.5,evade:1,pass:1.25,flank:1.1};
 let TEV=.5,FEV=.7,FSPD=1.2,ORB=.65,TRCH=.6,FLYS=2,HPK=1.2,ARMK=.003,CLC=.45,CVR=.8,LEAD=.6,HOLDS=1,CLOSE=1.5,STRS=1.3,DMG=.35,MOVS=.4,EM=.9;
