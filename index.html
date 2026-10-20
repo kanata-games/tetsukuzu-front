@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>鉄屑戦線 v0.8.2</title>
+<title>鉄屑戦線 v0.8.3</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;background:#0b0c0b;color:#c9c4b4;font-family:"BIZ UDGothic","Osaka-Mono",ui-monospace,"Noto Sans Mono CJK JP",monospace;font-size:15px;-webkit-tap-highlight-color:transparent}
@@ -49,6 +49,8 @@ button:disabled{opacity:.4}
 .tacrow{display:flex;align-items:center;justify-content:space-between;gap:6px;border:1px solid #2a2823;background:#131411;padding:4px 8px;font-size:13px;margin:4px 0}.tacrow button{flex:none;padding:5px 10px;font-size:12px}#tacSel{display:none}#tacSel.on{display:block}#tacSel .row button{padding:7px 2px;font-size:12px}
 .pslist{display:grid;grid-template-columns:1fr 1fr;gap:4px}.psc{border:1px solid #2a2823;background:#131411;padding:4px;display:flex;flex-direction:column;gap:3px;font-size:11px}.psc .top{display:flex;align-items:center;gap:4px;min-height:40px}.psc canvas,.psrow canvas{width:40px;height:40px;image-rendering:pixelated;flex:none;background:#0d0e0b}.psc .nm{flex:1;min-width:0;overflow:hidden;color:#c9b98a;line-height:1.3}.psc .nm small{color:#7d7868}.psc .bt{display:flex;gap:3px}.psc .bt button{flex:1;padding:5px 0;font-size:11px}
 .psrow{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:4px 0}.psrow button{display:flex;flex-direction:column;align-items:center;padding:3px 2px;font-size:10px;gap:1px;min-width:0}.psrow button span{max-width:100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.pschk{font-size:12px;color:#a39c88;display:flex;align-items:center;gap:4px;margin:2px 0}
+.shi{display:flex;align-items:center;gap:6px;text-align:left;padding:6px 8px;font-size:12px}.shi .sl{flex:none;width:1.6em;color:#d9a441;border:1px solid #4a463c;text-align:center}.shi .sn{flex:1;min-width:0}.shi .sn small{display:block;color:#7d7868;font-size:10px}.shi .sp{flex:none;color:#e0b04a}.shi.own{opacity:.55}.shi.own .sp{color:#7d7868}
+.shdet{border:1px solid #6a5a30;background:#16140e;padding:6px 8px;font-size:12px;position:sticky;top:0;z-index:2}
 .pr{display:flex;align-items:center;gap:3px;background:#131411;border:1px solid #2a2823;padding:3px}.pr .no{width:1.3em;color:#d9a441;text-align:center;font-size:12px}
 .pr select{flex:1;min-width:0;font:inherit;font-size:12px;background:#1b1c19;color:#d8d2c0;border:1px solid #4a463c;border-radius:3px;padding:6px 2px}
 .pr .th{color:#7d7868;font-size:12px}.pr .pc{flex:1;font-size:12px;color:#a39c88;padding-left:4px}.pr button{padding:5px 7px;font-size:12px;flex:none}
@@ -84,11 +86,20 @@ button,.stats,.inv,.log,canvas{border-radius:3px!important}
   <div class="warnTxt" id="psMsgH"></div>
   <div class="row"><button class="pri" onclick="go('rank')">▶ リーグ戦</button><button class="pri" onclick="go('venue')">▶ 会場移動</button></div>
   <div class="row"><button onclick="go('asm')">▶ 機体組立</button><button onclick="go('sortie')">▶ フリー出撃</button></div>
-  <div class="row"><button onclick="gacha()">闇市で部品調達 (100cr)</button><button class="warn" onclick="resetAll()">データ初期化</button></div>
+  <div class="row"><button onclick="go('shop')">▶ 闇市（品書き）</button><button class="warn" onclick="resetAll()">データ初期化</button></div>
   <div class="warnTxt" id="homeMsg"></div>
   <div class="hd">■ 前回 戦闘報告</div>
   <div class="inv" id="report"></div>
   <div class="inv" id="invInfo" style="font-size:11px"></div>
+ </section>
+ <!-- Shop -->
+ <section class="scr" id="s-shop">
+  <div class="role">闇市　品書き</div>
+  <div class="inv" id="shopInfo"></div>
+  <div id="shopDet" class="shdet" style="display:none"></div>
+  <div class="warnTxt" id="shopMsg"></div>
+  <div class="list" id="shopList" style="gap:3px;flex:none"></div>
+  <button onclick="go('home')">← 格納庫へ戻る</button>
  </section>
  <!-- Assemble -->
  <section class="scr" id="s-asm">
@@ -169,7 +180,7 @@ button,.stats,.inv,.log,canvas{border-radius:3px!important}
   <div id="resOv"><div class="rt" id="resTxt"></div><div class="row"><button class="pri" id="btnOvHome" onclick="go('home')">格納庫へ帰投</button><button id="btnOvRank" onclick="go('rank')">順位表へ</button></div></div>
  </section>
 </main>
-<footer>制作：清掃員工房 ／ カナタゲームズ　v0.8.2</footer>
+<footer>制作：清掃員工房 ／ カナタゲームズ　v0.8.3</footer>
 </div>
 <script src="assets/parts/manifest.js"></script>
 <script>
@@ -280,7 +291,7 @@ function load(){try{G=JSON.parse(localStorage.getItem(KEY))}catch(e){G=null}if(!
  if(!Array.isArray(G.ladder)||G.ladder.length!==gl.length+1)G.ladder=[...gl,'YOU'];
  if(!Array.isArray(G.lad0)||G.lad0.length!==l0.length+1)G.lad0=[...l0,'YOU'];
  if(typeof G.venue!=='number')G.venue=0;if(!Array.isArray(G.beat))G.beat=[];
- if(!Array.isArray(G.progs)||G.progs.length!==3)G.progs=['rush','cover','evade'].map(k=>TACTICS[k].rules.map(r=>({c:r.c,a:r.a})));if(!Array.isArray(G.presets)||G.presets.length!==4)G.presets=[null,null,null,null];G.ver=9;}
+ if(!Array.isArray(G.progs)||G.progs.length!==3)G.progs=['rush','cover','evade'].map(k=>TACTICS[k].rules.map(r=>({c:r.c,a:r.a})));if(!Array.isArray(G.presets)||G.presets.length!==4)G.presets=[null,null,null,null];G.ver=10;}
 function save(){localStorage.setItem(KEY,JSON.stringify(G));}
 
 // ---- stats ----
@@ -435,7 +446,7 @@ function render(){
  const nr=nextRival();$('brief').innerHTML=`${curV()===0?'廃工場':'中央リーグ'} <b style="color:#e0b04a">${myRank()}位</b>／${ladFor(curV()).length}　会場：${VENUES[G.venue].n}<br>`+(nr?`次の相手：${rankOf(nr.id)}位 ${nr.p}／「${nr.m}」（${VENUES[nr.v].n}${nr.boss?'・門番':''}）${unlocked(nr.v)?'':' 🔒'}`:'<b style="color:#e0b04a">リーグ王者</b>。挑む者を待て。');
  $('slots').innerHTML=SLOTS.map(([k,l])=>`<button data-slot="${k}" onclick="openPick('${k}')">${l}<small>${G.build[k]?P[G.build[k]].n:'— 空き —'}</small></button>`).join('');
 }
-function go(n,keep){const ov=$('resOv');if(ov)ov.classList.remove('on');document.querySelectorAll('.scr').forEach(e=>e.classList.remove('on'));$('s-'+n).classList.add('on');closePick();if(n==='sortie'&&!keep)newEnemy();if(n==='venue')renderVenue();if(n==='rank')renderRank();render();}
+function go(n,keep){const ov=$('resOv');if(ov)ov.classList.remove('on');document.querySelectorAll('.scr').forEach(e=>e.classList.remove('on'));$('s-'+n).classList.add('on');closePick();if(n==='sortie'&&!keep)newEnemy();if(n==='venue')renderVenue();if(n==='rank')renderRank();if(n==='shop'){SHSEL=null;$('shopMsg').textContent='';renderShop();}render();}
 function delta(a,b){return ['arm','atk','mob','fly','wt'].map(k=>{const d=b[k]-a[k];if(!d)return'';const good=k==='wt'?d<0:d>0;return `<span class="${good?'up':'dn'}">${STATN[k]}${d>0?'+':''}${d}</span>`}).filter(Boolean).join(' ')||'<span style="color:#7d7868">変化なし</span>';}
 let curSlot=null;
 function openPick(slot){
@@ -508,6 +519,35 @@ const RPROG={
 RIVALS.forEach(r=>r.tac=r.id);
 const SIGOWN=Object.fromEntries(RIVALS.flatMap(r=>r.sig.map(id=>[id,r])));
 const maxVenue=()=>{let v=0;while(VENUES[v+1]&&unlocked(v+1))v++;return v;};
+// ---- 闇市（品書き）：入荷条件つきの固定価格 ----
+const BASIC=['B1','B3','H1','H2','A1','A2','L1','L3','X1','X2','X3','X5'];
+const MILE=[[7,['H3','A3']],[5,['B2','L2','X4']],[3,['H4']]]; // 廃工場の順位到達で入荷
+function stockCond(id){ // null=入荷済み、文字列=入荷条件
+ if(BASIC.includes(id))return null;
+ const m=MILE.find(x=>x[1].includes(id));if(m)return myRank(0)<=m[0]||unlocked(1)?null:`廃工場${m[0]}位到達`;
+ const r=SIGOWN[id];if(r)return G.beat.includes(r.id)||unlocked(r.v+1)?null:`「${r.m}」撃破`;
+ return null;}
+const shopStock=()=>Object.keys(P).filter(id=>stockCond(id)===null);
+function price(id){const p=P[id],sc=p.arm*2.2+p.atk*4+Math.max(0,p.mob)*1.6+p.fly*1.4+p.cap*.5+(p.hit||0)*4+(p.radar?20:0)+(p.prop?20:0)+(SIGOWN[id]?60:0)-Math.max(0,-p.mob)*1;
+ const mul=SIGOWN[id]?1.6:MILE.some(x=>x[1].includes(id))?1.3:1; // 基本×1／順位入荷×1.3／専用部品×1.6
+ return Math.max(80,Math.min(400,Math.round((50+sc)*mul/10)*10));}
+let SHSEL=null;
+function renderShop(){
+ const st=shopStock(),cur=calc(G.build),sl={BODY:'胴',HEAD:'頭',ARMS:'腕',LEGS:'脚',ACC:'装'};
+ const rows=st.sort((a,b)=>price(a)-price(b)).map(id=>{const p=P[id],own=G.owned.includes(id),pr=price(id);
+  return `<button class="shi${own?' own':''}${SHSEL===id?' eq':''}" data-shop="${id}" onclick="shopSel('${id}')"><span class="sl">${sl[p.s]}</span><span class="sn">${p.n}<small>${['arm','atk','mob','fly','cap'].filter(k=>p[k]).map(k=>STATN[k]+p[k]).join(' ')}</small></span><span class="sp">${own?'所持':pr+'cr'}</span></button>`;}).join('');
+ const lk={};Object.keys(P).forEach(id=>{const c=stockCond(id);if(c)(lk[c]=lk[c]||[]).push(id);});
+ const ord=c=>{const m=c.match(/廃工場(\d)位/);if(m)return 10-+m[1];const r=RIVALS.find(x=>c===`「${x.m}」撃破`);return r?(unlocked(r.v)?20:40)+(20-rankOf(r.id)):99;};
+ const hint=Object.entries(lk).sort((a,b)=>ord(a[0])-ord(b[0])).slice(0,3).map(([c,a])=>`あと${a.length}品：${c}で入荷`).join('<br>');
+ $('shopInfo').innerHTML=`所持 ${G.cr}cr　入荷 ${st.length}品／全${Object.keys(P).length}品`+(hint?`<br><span style="color:#7d7868">${hint}</span>`:'');
+ $('shopList').innerHTML=rows;
+ if(SHSEL){const id=SHSEL,p=P[id],own=G.owned.includes(id),pr=price(id),slot=p.s==='ACC'?(!G.build.SHOULDER?'SHOULDER':!G.build.BACK?'BACK':'SHOULDER'):p.s;
+  const nb={...G.build,[slot]:id};if(p.s==='ACC'){const o=slot==='SHOULDER'?'BACK':'SHOULDER';if(nb[o]===id)nb[o]=null;}
+  $('shopDet').innerHTML=`<b>${p.n}</b>　<span style="color:#7d7868">${SLOTS.find(x=>x[0]===slot)[1]}</span><br><span class="flav">${FL[id]||''}</span><br><small>重${p.wt} 装${p.arm} 攻${p.atk} 機${p.mob} 飛${p.fly}${p.cap?' 積'+p.cap:''}</small><br>現在の機体に付けると：${delta(cur,calc(nb))}${calc(nb).tooHeavy?' <span class="dn">過積載</span>':''}
+   <div class="row"><button class="pri" id="btnBuy" onclick="buy('${id}')" ${own||G.cr<pr?'disabled':''}>${own?'所持済み':G.cr<pr?`資金不足（${pr}cr）`:`購入 ${pr}cr`}</button><button onclick="SHSEL=null;renderShop()">閉じる</button></div>`;$('shopDet').style.display='';}
+ else $('shopDet').style.display='none';}
+function shopSel(id){SHSEL=id;renderShop();}
+function buy(id){const pr=price(id);if(G.owned.includes(id)||G.cr<pr||stockCond(id))return;G.cr-=pr;G.owned.push(id);save();render();renderShop();$('shopMsg').textContent='購入：'+P[id].n+'（組立画面で装備できます）';}
 const shopPool=()=>Object.keys(P).filter(id=>!SIGOWN[id]||SIGOWN[id].v<maxVenue()); // 闇市・鹵獲：旧部品＋踏破済み会場の専用部品
 
 const RIV=Object.fromEntries(RIVALS.map(r=>[r.id,r]));
@@ -534,10 +574,11 @@ function renderRank(){
   const r=RIV[id];let act='';
   if(canChallenge(id))act=r.v===G.venue?`<button class="pri" data-ch="${id}" onclick="challenge('${id}')">挑戦</button>`:`<span style="color:#7d7868">要移動:${VENUES[r.v].n}</span>`;
   else if(i+1<m&&!unlocked(r.v))act='<span style="color:#6a6558">🔒</span>';
+  else if(i+1>m&&unlocked(r.v))act=r.v===G.venue?`<button data-re="${id}" onclick="challenge('${id}',1)">再戦</button>`:`<span style="color:#7d7868">要移動</span>`; // 追い抜いた相手：順位変動なしの再戦
   return `<div class="rw"><span class="rk">${i+1}位</span><span class="nm">${r.col?`<span class="cs" style="${swS(r.col)}"></span>`:''}${r.p}／「${r.m}」${v===0?'':`<span style="color:#6a6558">・${VENUES[r.v].n}</span>`}${r.boss?`<span class="tag">${v===0?'頂点':'門番'}</span>`:''}${r.t?`<br><small style="color:${COLS[r.col].sw};font-size:11px">二つ名「${r.t}」</small>`:''}<br><small style="color:#7d7868;font-size:10px">${calc(r.b).role}／専用：${r.sig.map(k=>P[k].n.replace(/.*「(.*)」/,'$1')).join('・')}</small></span>${act}</div>`;}).join('');
 }
 const swS=c=>COLS[c]?`background:linear-gradient(135deg,${COLS[c].sw} 55%,${COLS[c].sw2||'#000'} 55%)`:'';
-function challenge(id){const r=RIV[id];EN={b:{...r.b},name:`${r.p}／「${r.m}」`,lv:r.lv,tac:r.tac,rival:id,col:r.col};go('sortie',true);showEnemy();}
+function challenge(id,re){const r=RIV[id];EN={b:{...r.b},name:`${r.p}／「${r.m}」`,lv:r.lv,tac:r.tac,rival:id,col:r.col,re:!!re};go('sortie',true);showEnemy();}
 // ---- enemy & battle ----
 const ENAMES=['残党機 K-07「墓守」','略奪隊「灰狼」','脱走兵機 S-12','無人警備機 GD-3','錆犬小隊 3番機','識別不明機「ナナシ」'];
 let EN=null;
@@ -556,7 +597,7 @@ function newEnemy(){
 }
 function showEnemy(){
  const b=EN.b,s=calc(b);
- $('sortieTitle').textContent=(EN.rival?`${RIV[EN.rival].v===0?'廃工場 順位戦':'リーグ戦'} ${rankOf(EN.rival)}位への挑戦`:'フリー出撃 ── 敵影捕捉')+'　＠'+VENUES[G.venue].n;
+ $('sortieTitle').textContent=(EN.rival?(EN.re?`再戦（順位変動なし） ${RIV[EN.rival].m}`:`${RIV[EN.rival].v===0?'廃工場 順位戦':'リーグ戦'} ${rankOf(EN.rival)}位への挑戦`):'フリー出撃 ── 敵影捕捉')+'　＠'+VENUES[G.venue].n;
  const rv=EN.rival&&RIV[EN.rival];$('enIntro').innerHTML=rv&&rv.intro?`<span class="cs" style="${swS(rv.col)}"></span><b>二つ名「${rv.t}」</b>　配色：${COLS[rv.col].n}<br><span class="q">${rv.p}「${rv.intro}」</span>`:'';$('enIntro').style.display=rv&&rv.intro?'':'none';
  $('btnReroll').style.display=EN.rival?'none':'';
  draw($('cvMe'),G.build);draw($('cvEn'),b,0,false,EN.col);
@@ -810,26 +851,33 @@ function fight(){
  let res;
  if(EN.rival){
   const r=RIV[EN.rival],rr=rankOf(r.id);
-  if(win){
+  if(EN.re){ // 再戦：順位は動かない。報酬は控えめ、未所持の専用部品は確実に
+   if(win){G.wins++;const c=40+Math.round(r.lv*8);G.cr+=c;res=`■ 再戦勝利　報酬 ${c}cr`;
+    const sg=r.sig.filter(k=>!G.owned.includes(k));
+    if(sg.length){G.owned.push(sg[0]);res+=`／獲得：${P[sg[0]].n}`;}
+    else{const no=shopStock().filter(k=>!G.owned.includes(k));if(no.length&&Math.random()<.3){const n=pick(no);G.owned.push(n);res+=`／獲得：${P[n].n}`;}}
+    if(!G.beat.includes(r.id))G.beat.push(r.id);}
+   else{G.loss++;G.cr+=15;res='■ 再戦敗北　回収手当 15cr';}
+  }else if(win){
    G.wins++;const LL=ladFor(r.v),mi=LL.indexOf('YOU');LL[mi]=r.id;LL[rr-1]='YOU';
-   const c=r.v===0?80+(10-rr)*12:80+(12-rr)*14+60;G.cr+=c;res=`■ 勝利　${rr}位に昇格　報酬 ${c}cr`;
+   const c=r.v===0?70+(10-rr)*10:130+(11-rr)*12;G.cr+=c;res=`■ 勝利　${rr}位に昇格　報酬 ${c}cr`;
    const first=!G.beat.includes(r.id),sg=r.sig.filter(k=>!G.owned.includes(k));
    if(first&&sg.length){(r.boss?sg:sg.slice(0,1)).forEach(n=>{G.owned.push(n);res+=`／獲得：${P[n].n}`;});} // 初撃破：専用部品（門番は2つ）
-   else{const sg2=sg.length?sg:shopPool().filter(k=>!G.owned.includes(k));if(sg2.length&&Math.random()<.5){const n=pick(sg2);G.owned.push(n);res+=`／獲得：${P[n].n}`;}}
+   else{const sg2=sg.length?sg:shopStock().filter(k=>!G.owned.includes(k));if(sg2.length&&Math.random()<.3){const n=pick(sg2);G.owned.push(n);res+=`／獲得：${P[n].n}`;}}
    if(!G.beat.includes(r.id))G.beat.push(r.id);
    if(r.boss&&VENUES[r.v+1])res+=`／会場「${VENUES[r.v+1].n}」解放`;
    if(rr===1)res+=r.v===0?'／廃工場の頂点':'／リーグ王者';
   }else{G.loss++;G.cr+=20;res='■ 敗北　順位変動なし　回収手当 20cr';}
  }else if(win){
-  G.wins++;const c=60+Math.floor(Math.random()*60)+EN.lv*10;G.cr+=c;
+  G.wins++;const c=Math.round(45+Math.random()*35+EN.lv*10);G.cr+=c;
   res=`■ 任務完了　報酬 ${c}cr`;
-  const notOwned=shopPool().filter(k=>!G.owned.includes(k));
-  if(notOwned.length&&Math.random()<0.5){const n=pick(notOwned);G.owned.push(n);res+=`／鹵獲：${P[n].n}`;}
+  const notOwned=shopStock().filter(k=>!G.owned.includes(k));
+  if(notOwned.length&&Math.random()<0.25){const n=pick(notOwned);G.owned.push(n);res+=`／鹵獲：${P[n].n}`;}
  }else{G.loss++;G.cr+=15;res='■ 任務失敗　回収手当 15cr';}
  G.last={en:EN.name,win,turns:H.end.toFixed(1)+'秒',hp:Math.ceil(H.me.cur)+'/'+H.me.hp,note:res.replace('■ ','')+'（方針：'+progOf(G.tac).n+'）'};save();
  go('battle');$('bEn').textContent=EN.name;$('btnBack').disabled=true;$('btnSkip').disabled=false;
  SPRC=[mechCanvas(G.build),mechCanvas(EN.b,EN.col)];
- const [m,e]=buildUnits();SIM=makeSim(seed,m,e);SIM.res=res;SIM.lg=!!EN.rival;SIM.lgv=EN.rival?(RIV[EN.rival].v===0?0:1):0;SPEED=1;$('btnSpd').textContent='2倍速';
+ const [m,e]=buildUnits();SIM=makeSim(seed,m,e);SIM.res=res;SIM.lg=!!EN.rival&&!EN.re;SIM.lgv=EN.rival?(RIV[EN.rival].v===0?0:1):0;SPEED=1;$('btnSpd').textContent='2倍速';
  log0(`>> 交戦開始　自機【${progOf(m.tac).n}】／${e.nm}【${progOf(e.tac).n}】`);{const rv=EN.rival&&RIV[EN.rival];if(rv&&rv.intro)log0(`${rv.p}「${rv.intro}」`);}
  acc=0;lastT=performance.now();requestAnimationFrame(loop);
 }
@@ -855,12 +903,7 @@ function loop(now){
 }
 function toggleSpd(){SPEED=SPEED===1?2:1;$('btnSpd').textContent=SPEED===2?'等倍速':'2倍速';}
 function skipBattle(){if(!SIM||SIM.fin)return;while(!SIM.fin)SIM.step();}
-function gacha(){
- const notOwned=shopPool().filter(k=>!G.owned.includes(k));
- if(!notOwned.length){$('homeMsg').textContent=Object.keys(P).every(k=>G.owned.includes(k))?'全パーツ所持済み！':'闇市の在庫切れ。ライバルを倒すか次の会場を開こう';return;}
- if(G.cr<100){$('homeMsg').textContent='クレジット不足';return;}
- G.cr-=100;const n=pick(notOwned);G.owned.push(n);save();render();$('homeMsg').textContent='調達：'+P[n].n;
-}
+
 function resetAll(){if(confirm('セーブデータを初期化しますか？')){localStorage.removeItem(KEY);load();save();render();$('homeMsg').textContent='初期化しました';}}
 load();render();
 let PF=0;setInterval(()=>{PF^=1;const sc=document.querySelector('.scr.on');if(!sc)return;sc.querySelectorAll('canvas').forEach(c=>{if(c.id==='cvHome'||c.id==='cvAsm'||c.id==='cvMe')draw(c,G.build,PF);else if(c.id==='cvEn'&&EN)draw(c,EN.b,PF,false,EN.col);});},83); // 回転翼 12fps
