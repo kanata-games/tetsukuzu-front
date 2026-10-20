@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>鉄屑戦線 v0.8.3</title>
+<title>鉄屑戦線 v0.8.4</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;background:#0b0c0b;color:#c9c4b4;font-family:"BIZ UDGothic","Osaka-Mono",ui-monospace,"Noto Sans Mono CJK JP",monospace;font-size:15px;-webkit-tap-highlight-color:transparent}
@@ -51,6 +51,7 @@ button:disabled{opacity:.4}
 .psrow{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:4px 0}.psrow button{display:flex;flex-direction:column;align-items:center;padding:3px 2px;font-size:10px;gap:1px;min-width:0}.psrow button span{max-width:100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.pschk{font-size:12px;color:#a39c88;display:flex;align-items:center;gap:4px;margin:2px 0}
 .shi{display:flex;align-items:center;gap:6px;text-align:left;padding:6px 8px;font-size:12px}.shi .sl{flex:none;width:1.6em;color:#d9a441;border:1px solid #4a463c;text-align:center}.shi .sn{flex:1;min-width:0}.shi .sn small{display:block;color:#7d7868;font-size:10px}.shi .sp{flex:none;color:#e0b04a}.shi.own{opacity:.55}.shi.own .sp{color:#7d7868}
 .shdet{border:1px solid #6a5a30;background:#16140e;padding:6px 8px;font-size:12px;position:sticky;top:0;z-index:2}
+.chips{display:flex;flex-wrap:wrap;gap:3px;align-items:center;margin:1px 0}.chips .cl{font-size:10px;color:#7d7868;width:2.4em;flex:none}button.chip{flex:none;width:auto;padding:3px 6px!important;font-size:11px!important;line-height:1.2;min-height:0!important;border-radius:3px;margin:0}.chip.on{background:#4a3a18;border-color:#d9a441;color:#ffe28c}
 .pr{display:flex;align-items:center;gap:3px;background:#131411;border:1px solid #2a2823;padding:3px}.pr .no{width:1.3em;color:#d9a441;text-align:center;font-size:12px}
 .pr select{flex:1;min-width:0;font:inherit;font-size:12px;background:#1b1c19;color:#d8d2c0;border:1px solid #4a463c;border-radius:3px;padding:6px 2px}
 .pr .th{color:#7d7868;font-size:12px}.pr .pc{flex:1;font-size:12px;color:#a39c88;padding-left:4px}.pr button{padding:5px 7px;font-size:12px;flex:none}
@@ -180,7 +181,7 @@ button,.stats,.inv,.log,canvas{border-radius:3px!important}
   <div id="resOv"><div class="rt" id="resTxt"></div><div class="row"><button class="pri" id="btnOvHome" onclick="go('home')">格納庫へ帰投</button><button id="btnOvRank" onclick="go('rank')">順位表へ</button></div></div>
  </section>
 </main>
-<footer>制作：清掃員工房 ／ カナタゲームズ　v0.8.3</footer>
+<footer>制作：清掃員工房 ／ カナタゲームズ　v0.8.4</footer>
 </div>
 <script src="assets/parts/manifest.js"></script>
 <script>
@@ -449,12 +450,35 @@ function render(){
 function go(n,keep){const ov=$('resOv');if(ov)ov.classList.remove('on');document.querySelectorAll('.scr').forEach(e=>e.classList.remove('on'));$('s-'+n).classList.add('on');closePick();if(n==='sortie'&&!keep)newEnemy();if(n==='venue')renderVenue();if(n==='rank')renderRank();if(n==='shop'){SHSEL=null;$('shopMsg').textContent='';renderShop();}render();}
 function delta(a,b){return ['arm','atk','mob','fly','wt'].map(k=>{const d=b[k]-a[k];if(!d)return'';const good=k==='wt'?d<0:d>0;return `<span class="${good?'up':'dn'}">${STATN[k]}${d>0?'+':''}${d}</span>`}).filter(Boolean).join(' ')||'<span style="color:#7d7868">変化なし</span>';}
 let curSlot=null;
+// ---- 並べ替え・絞り込み（一覧ごとに保存）----
+const CAT={ARMS:{A1:'実弾',A3:'実弾',A4:'実弾',A8:'実弾',A10:'実弾',A2:'近接',A7:'近接',A5:'火炎・熱線',A9:'火炎・熱線',A6:'誘導弾'},
+ ACC:{X7:'誘導弾',X6:'対空',X4:'砲',X3:'防御',X10:'防御',X14:'防御',X1:'飛行',X12:'飛行',X13:'飛行',X2:'機動',X11:'機動',X5:'支援',X8:'支援',X9:'支援'},
+ LEGS:{L1:'二脚',L9:'二脚',L10:'二脚',L4:'逆関節',L5:'四脚',L6:'多脚',L2:'履帯',L8:'履帯',L7:'車輪',L3:'浮遊'}};
+const CATS={ARMS:['実弾','近接','火炎・熱線','誘導弾'],ACC:['誘導弾','対空','砲','防御','飛行','機動','支援'],LEGS:['二脚','逆関節','四脚','多脚','履帯','車輪','浮遊']};
+const SORTK=[['n','名前'],['wt','重量'],['arm','装甲'],['atk','攻撃'],['mob','機動'],['fly','飛行']],SLN={BODY:'胴',HEAD:'頭',ARMS:'腕',LEGS:'脚',ACC:'装'};
+const catOf=id=>(CAT[P[id].s]||{})[id]||'';
+const sortOf=k=>(G.sorts||{})[k]||{k:k==='shop'?'pr':'n',d:k==='shop'?1:1},filtOf=k=>(G.filt||{})[k]||{};
+function listApply(key,ids){const f=filtOf(key),so=sortOf(key);
+ let a=ids.filter(id=>(!f.s||P[id].s===f.s)&&(!f.c||catOf(id)===f.c));
+ const v=id=>so.k==='n'?P[id].n.replace(/.*「(.*)」/,'$1'):so.k==='pr'?price(id):(P[id][so.k]||0);
+ a.sort((x,y)=>{const A=v(x),B=v(y);const r=typeof A==='string'?A.localeCompare(B,'ja'):A-B;return so.d*r||x.localeCompare(y);});return a;}
+function sbar(key,shop,slotT){const so=sortOf(key),f=filtOf(key),re=shop?'renderShop()':'openPick(curSlot)';
+ const ks=shop?[...SORTK,['pr','価格']]:SORTK;
+ let h=`<div class="chips"><span class="cl">並び</span>`+ks.map(([k,n])=>`<button class="chip${so.k===k?' on':''}" data-sort="${k}" onclick="setSort('${key}','${k}');${re}">${n}${so.k===k?(so.d>0?'▲':'▼'):''}</button>`).join('')+`</div>`;
+ const st=shop?f.s:slotT;
+ if(shop)h+=`<div class="chips"><span class="cl">部位</span>`+[['','すべて'],...Object.entries(SLN)].map(([k,n])=>`<button class="chip${(f.s||'')===k?' on':''}" data-fs="${k}" onclick="setFilt('${key}','s','${k}');${re}">${n}</button>`).join('')+`</div>`;
+ if(st&&CATS[st])h+=`<div class="chips"><span class="cl">種別</span>`+['',...CATS[st]].map(c=>`<button class="chip${(f.c||'')===c?' on':''}" data-fc="${c}" onclick="setFilt('${key}','c','${c}');${re}">${c||'すべて'}</button>`).join('')+`</div>`;
+ return h;}
+function setSort(key,k){G.sorts=G.sorts||{};const o=sortOf(key);G.sorts[key]=o.k===k?{k,d:-o.d}:{k,d:(k==='n'||k==='wt'||k==='pr')?1:-1};save();}
+function setFilt(key,t,v){G.filt=G.filt||{};const f={...filtOf(key)};f[t]=v||undefined;if(t==='s')f.c=undefined;G.filt[key]=f;save();}
 function openPick(slot){
  curSlot=slot;const t=slotType(slot),cur=calc(G.build);
  $('pickTitle').textContent=SLOTS.find(x=>x[0]===slot)[1]+' を選択';
  let h='';
  if(slot!=='BODY'&&G.build[slot]){const nb={...G.build,[slot]:null};h+=`<button data-id="none" onclick="equip(null)">✕ 外す<br>${delta(cur,calc(nb))}</button>`;}
- G.owned.filter(id=>P[id].s===t).forEach(id=>{
+ const key='pick_'+t;h=sbar(key,false,t)+h;const own=G.owned.filter(id=>P[id].s===t),lst=listApply(key,own);
+ if(own.length&&!lst.length)h+='<div class="warnTxt">この種別の所持パーツなし</div>';
+ lst.forEach(id=>{
   const other=t==='ACC'&&Object.entries(G.build).some(([k,v])=>v===id&&k!==slot);
   const nb={...G.build,[slot]:id};if(other)nb[slot==='SHOULDER'?'BACK':'SHOULDER']=null;
   const eq=G.build[slot]===id,p=P[id];
@@ -534,13 +558,13 @@ function price(id){const p=P[id],sc=p.arm*2.2+p.atk*4+Math.max(0,p.mob)*1.6+p.fl
 let SHSEL=null;
 function renderShop(){
  const st=shopStock(),cur=calc(G.build),sl={BODY:'胴',HEAD:'頭',ARMS:'腕',LEGS:'脚',ACC:'装'};
- const rows=st.sort((a,b)=>price(a)-price(b)).map(id=>{const p=P[id],own=G.owned.includes(id),pr=price(id);
+ const rows=listApply('shop',st).map(id=>{const p=P[id],own=G.owned.includes(id),pr=price(id);
   return `<button class="shi${own?' own':''}${SHSEL===id?' eq':''}" data-shop="${id}" onclick="shopSel('${id}')"><span class="sl">${sl[p.s]}</span><span class="sn">${p.n}<small>${['arm','atk','mob','fly','cap'].filter(k=>p[k]).map(k=>STATN[k]+p[k]).join(' ')}</small></span><span class="sp">${own?'所持':pr+'cr'}</span></button>`;}).join('');
  const lk={};Object.keys(P).forEach(id=>{const c=stockCond(id);if(c)(lk[c]=lk[c]||[]).push(id);});
  const ord=c=>{const m=c.match(/廃工場(\d)位/);if(m)return 10-+m[1];const r=RIVALS.find(x=>c===`「${x.m}」撃破`);return r?(unlocked(r.v)?20:40)+(20-rankOf(r.id)):99;};
  const hint=Object.entries(lk).sort((a,b)=>ord(a[0])-ord(b[0])).slice(0,3).map(([c,a])=>`あと${a.length}品：${c}で入荷`).join('<br>');
  $('shopInfo').innerHTML=`所持 ${G.cr}cr　入荷 ${st.length}品／全${Object.keys(P).length}品`+(hint?`<br><span style="color:#7d7868">${hint}</span>`:'');
- $('shopList').innerHTML=rows;
+ $('shopList').innerHTML=sbar('shop',true)+(rows||'<div class="warnTxt">該当する品なし</div>');
  if(SHSEL){const id=SHSEL,p=P[id],own=G.owned.includes(id),pr=price(id),slot=p.s==='ACC'?(!G.build.SHOULDER?'SHOULDER':!G.build.BACK?'BACK':'SHOULDER'):p.s;
   const nb={...G.build,[slot]:id};if(p.s==='ACC'){const o=slot==='SHOULDER'?'BACK':'SHOULDER';if(nb[o]===id)nb[o]=null;}
   $('shopDet').innerHTML=`<b>${p.n}</b>　<span style="color:#7d7868">${SLOTS.find(x=>x[0]===slot)[1]}</span><br><span class="flav">${FL[id]||''}</span><br><small>重${p.wt} 装${p.arm} 攻${p.atk} 機${p.mob} 飛${p.fly}${p.cap?' 積'+p.cap:''}</small><br>現在の機体に付けると：${delta(cur,calc(nb))}${calc(nb).tooHeavy?' <span class="dn">過積載</span>':''}
