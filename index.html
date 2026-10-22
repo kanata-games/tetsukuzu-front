@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>鉄屑戦線 v0.8.4</title>
+<title>鉄屑戦線 v0.9</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;background:#0b0c0b;color:#c9c4b4;font-family:"BIZ UDGothic","Osaka-Mono",ui-monospace,"Noto Sans Mono CJK JP",monospace;font-size:15px;-webkit-tap-highlight-color:transparent}
@@ -181,7 +181,7 @@ button,.stats,.inv,.log,canvas{border-radius:3px!important}
   <div id="resOv"><div class="rt" id="resTxt"></div><div class="row"><button class="pri" id="btnOvHome" onclick="go('home')">格納庫へ帰投</button><button id="btnOvRank" onclick="go('rank')">順位表へ</button></div></div>
  </section>
 </main>
-<footer>制作：清掃員工房 ／ カナタゲームズ　v0.8.4</footer>
+<footer>制作：清掃員工房 ／ カナタゲームズ　v0.9</footer>
 </div>
 <script src="assets/parts/manifest.js"></script>
 <script>
@@ -261,6 +261,13 @@ const P={
  A10:{s:'ARMS',n:'釘打ち腕「クギウチ」',wt:14,arm:4,atk:17,mob:0,fly:0,cap:0},
  L10:{s:'LEGS',n:'竹馬脚「タケウマ」',wt:14,arm:4,atk:0,mob:34,fly:0,cap:45},
  X14:{s:'ACC',n:'分銅「フンドウ」',wt:12,arm:10,atk:6,mob:-2,fly:0,cap:0},
+ B9:{s:'BODY',n:'鉱車コア「トロッコ」',wt:40,arm:32,atk:0,mob:2,fly:0,cap:42},
+ H10:{s:'HEAD',n:'防塵ヘッド「スナメガネ」',wt:7,arm:6,atk:2,mob:5,fly:0,cap:0,hit:8},
+ A11:{s:'ARMS',n:'削岩腕「キリモミ」',wt:20,arm:10,atk:21,mob:-2,fly:0,cap:0},
+ L11:{s:'LEGS',n:'砂上履帯「スナモグリ」',wt:30,arm:16,atk:0,mob:14,fly:0,cap:115},
+ X15:{s:'ACC',n:'発破筒「ハッパ」',wt:12,arm:0,atk:14,mob:-1,fly:0,cap:0},
+ X16:{s:'ACC',n:'防塵布「スナヨケ」',wt:6,arm:9,atk:0,mob:0,fly:0,cap:0},
+ H11:{s:'HEAD',n:'坑灯ヘッド「カンテラ」',wt:8,arm:5,atk:3,mob:2,fly:0,cap:0,hit:6},
  X13:{s:'ACC',n:'噴進翼「ハヤブサ」',wt:12,arm:0,atk:0,mob:20,fly:24,cap:10},
 };
 const FL={B1:'量産規格の汎用胴体。どこの戦場にも転がっている。',B2:'旧要塞砲の装甲板を流用した鈍重な胴体。',B3:'装甲を削り落とした斥候用の胴体。',
@@ -275,6 +282,7 @@ const FL={B1:'量産規格の汎用胴体。どこの戦場にも転がってい
  L4:'後ろへ曲がる脚。遮蔽物に阻まれると跳び越える。',L5:'四本脚で踏ん張る。射撃が安定する。',L6:'多脚で瓦礫も遮蔽物も乗り越える。',L7:'舗装路なら最速の車輪。止まるのが苦手。',L8:'巨大な履帯。何でも積めるが遅い。',L9:'ふくらはぎの噴射口で跳ねる。跳躍中は当たりにくい。',
  X6:'飛ぶ敵だけを狙う連装機関砲。地上の敵には撃たない。',X7:'肩の発射筒から誘導弾。飛行機に強い。',X8:'被弾すると煙幕を張る。敵の照準が乱れる。',X9:'敵の照準器と誘導弾を狂わせる。',
  B8:'廃工場の端材を継ぎ接ぎした胴体。見た目より硬い。',H9:'赤鬼の面。睨まれた者は照準が震えるという。',A10:'工場の釘打ち機を腕にした。中距離で釘を浴びせる。',L10:'細長い竹馬脚。速いが、踏ん張りは利かない。',X14:'鎖付きの分銅。肩に下げて盾代わりにする。',
+ B9:'鉱石運びの台車を胴にした。重いが、よく積む。',H10:'砂嵐の中でも目を開けていられる防塵眼鏡。',A11:'岩盤を穿つ削岩機。近づけば装甲も穿つ。',L11:'砂に沈まない幅広の履帯。履帯にしては速い。',X15:'坑道用の発破を肩から撃ち出す。',X16:'砂避けの厚布。破片も少しは止める。',H11:'坑夫の灯を額に付けた頭。暗がりで狙いが利く。',
  X10:'畳ほどある鉄板。動きは鈍る。',X11:'背負う増槽。機動と飛行が少し伸びる。',X12:'大径の回転翼。重い機体でも浮かせる。',X13:'背中の噴進翼。飛べば速い。脚と組めば空を滑る。',
 };
 const SLOTS=[['BODY','胴体（必須）'],['HEAD','頭部'],['ARMS','腕・武器'],['LEGS','脚部'],['SHOULDER','肩装備'],['BACK','背装備']];
@@ -284,15 +292,18 @@ const KEY='mechAsm_v01';
 let G;
 function fresh(){return{cr:200,owned:['B1','H1','A1','L1','X1','X3'],build:{BODY:'B1',HEAD:'H1',ARMS:'A1',LEGS:'L1',SHOULDER:null,BACK:null},wins:0,loss:0,tac:'rush'};}
 function load(){try{G=JSON.parse(localStorage.getItem(KEY))}catch(e){G=null}if(!G||!G.build||!G.build.BODY)G=fresh();if(!G.tac)G.tac='rush';
- const gl=RIVALS.filter(r=>r.v>0).map(r=>r.id),l0=RIVALS.filter(r=>r.v===0).map(r=>r.id);
+ const gl=RIVALS.filter(r=>r.v>1).map(r=>r.id),l0=RIVALS.filter(r=>r.v===0).map(r=>r.id),l1=['s1','s2','s3','r8','s4','s5','r9','s6','s7','s8','r10'];
  if(Array.isArray(G.ladder)&&G.ladder.length===15&&!G.lad0){ // v0.7以前 → 会場別順位へ移行
   const o=G.ladder;if(o.indexOf('YOU')<o.indexOf('r11')&&G.beat.includes('r11'))G.legacy1=1;
   const ord=o.filter(x=>['r11','r12','r13','r14','YOU'].includes(x));ord.splice(ord.indexOf('r11')+1,0,'w4');
-  G.lad0=['w1','w2','w3',...ord];G.ladder=o.filter(x=>gl.includes(x)||x==='YOU');}
+  G.lad0=['w1','w2','w3',...ord];G.ladder=o.filter(x=>RIVALS.some(r=>r.id===x&&r.v>0)||x==='YOU');}
+ if(!G.lad1&&Array.isArray(G.beat)&&G.beat.includes('r8'))G.legacy2=1; // v0.8以前に岩窟王を倒していれば水没市街は解放のまま
+ if(Array.isArray(G.ladder))G.ladder=G.ladder.filter(x=>gl.includes(x)||x==='YOU');
  if(!Array.isArray(G.ladder)||G.ladder.length!==gl.length+1)G.ladder=[...gl,'YOU'];
  if(!Array.isArray(G.lad0)||G.lad0.length!==l0.length+1)G.lad0=[...l0,'YOU'];
+ if(!Array.isArray(G.lad1)||G.lad1.length!==l1.length+1)G.lad1=[...l1,'YOU'];
  if(typeof G.venue!=='number')G.venue=0;if(!Array.isArray(G.beat))G.beat=[];
- if(!Array.isArray(G.progs)||G.progs.length!==3)G.progs=['rush','cover','evade'].map(k=>TACTICS[k].rules.map(r=>({c:r.c,a:r.a})));if(!Array.isArray(G.presets)||G.presets.length!==4)G.presets=[null,null,null,null];G.ver=10;}
+ if(!Array.isArray(G.progs)||G.progs.length!==3)G.progs=['rush','cover','evade'].map(k=>TACTICS[k].rules.map(r=>({c:r.c,a:r.a})));if(!Array.isArray(G.presets)||G.presets.length!==4)G.presets=[null,null,null,null];G.ver=11;}
 function save(){localStorage.setItem(KEY,JSON.stringify(G));}
 
 // ---- stats ----
@@ -348,9 +359,10 @@ const PIMG={B1:['body_nagi'],B2:['body_iwao'],B3:['body_tsubame'],H1:['head_meji
  A4:['arm_mozu'],A5:['arm_kagaribi'],A6:['arm_hachinosu'],A7:['arm_gennou'],A8:['arm_tsubakuro'],A9:['arm_hibashi'],
  L4:['leg_batta'],L5:['leg_komainu'],L6:['leg_zatou'],L7:['leg_koro'],L8:['leg_daidara'],L9:['leg_haneashi'],
  X6:['equip_karasuodoshi'],X7:['equip_yamabachi'],X8:['equip_kirisame'],X9:['equip_zawameki_1','equip_zawameki_2'],X10:['equip_tatami'],X11:['equip_hyoutan'],X12:['equip_ootonbo_1','equip_ootonbo_2'],X13:['equip_hayabusa'],
- B8:['body_tsugihagi'],H9:['head_hannya'],A10:['arm_kugiuchi'],L10:['leg_takeuma'],X14:['equip_fundou']};
+ B8:['body_tsugihagi'],H9:['head_hannya'],A10:['arm_kugiuchi'],L10:['leg_takeuma'],X14:['equip_fundou'],
+ B9:['body_torokko'],H10:['head_sunamegane'],A11:['arm_kirimomi'],L11:['leg_sunamoguri'],X15:['equip_happa'],X16:['equip_sunayoke'],H11:['head_kantera']};
 // 装備の取付種別：back=背中レイヤー、L/R=画像が描かれている肩（画面上の左右）。肩スロット＝右肩、背スロットの盾・砲＝左肩に付ける（逆側は左右反転＋1px右）
-const AKIND={X1:'back',X2:'back',X5:'back',X3:'L',X4:'R',X6:'R',X7:'R',X10:'L',X14:'L',X8:'back',X9:'back',X11:'back',X12:'back',X13:'back'};
+const AKIND={X1:'back',X2:'back',X5:'back',X3:'L',X4:'R',X6:'R',X7:'R',X10:'L',X14:'L',X15:'R',X16:'back',X8:'back',X9:'back',X11:'back',X12:'back',X13:'back'};
 // ---- 新パーツのコード描画（64x64 組立済み位置。画像が届くまでの代替）----
 const FXC={k:'#0e0f14',g1:'#24272f',g2:'#383d48',g3:'#535a68',g4:'#747d8c',g5:'#9ca6b4',g6:'#ccd4dc',o1:'#282d1b',o2:'#424a2a',o3:'#616b3c',o4:'#889456',r1:'#3c1f15',r2:'#6c3520',r3:'#9c562a',r4:'#c68040',a1:'#7c3c0c',a2:'#f09e20',a3:'#ffe28c'};
 const FXM=a=>a.map(([x,y,w,h,c,f])=>[64-x-w,y,w,h,c,f]); // 左右反転（左パーツ→右）
@@ -394,6 +406,13 @@ const FX={
  A10:FXS([[14,21,10,9,'g3'],[14,21,10,2,'g4'],[16,30,6,8,'g2'],[12,38,12,8,'o2'],[12,38,12,2,'o3'],[14,46,4,8,'g3'],[14,54,4,2,'g5'],[19,40,4,5,'r2'],[20,41,2,1,'a1']]),
  L10:FXS([[25,42,7,5,'g3'],[25,42,7,1,'g4'],[26,47,3,9,'g2'],[25,50,5,2,'g3'],[26,56,3,5,'g2'],[23,61,8,2,'g4']]),
  X14:[[12,19,4,10,'g4'],[13,20,2,1,'g5'],[13,23,2,1,'g5'],[13,26,2,1,'g5'],[8,29,12,12,'g2'],[8,29,12,2,'g3'],[10,32,8,6,'g1'],[13,34,2,2,'a1']],
+ B9:[[15,22,34,22,'r2'],[15,22,34,2,'r3'],[13,20,38,3,'g3'],[13,20,38,1,'g4'],[17,26,30,1,'r1'],[17,32,30,1,'r1'],[17,38,30,1,'r1'],[18,40,6,6,'k'],[40,40,6,6,'k'],[20,42,2,2,'g4'],[42,42,2,2,'g4'],[26,27,12,3,'k'],[28,28,8,1,'a2'],[17,24,6,6,'g2'],[41,24,6,6,'g2'],[26,45,12,2,'g2']],
+ H10:[[24,10,16,13,'o2'],[24,10,16,2,'o3'],[22,13,20,6,'g2'],[24,14,7,4,'k'],[33,14,7,4,'k'],[25,15,5,2,'a2'],[34,15,5,2,'a2'],[31,15,2,1,'g4'],[26,19,12,3,'o1'],[28,22,8,2,'g2']],
+ H11:[[24,9,16,14,'g3'],[24,9,16,2,'g4'],[29,5,6,5,'g2'],[30,6,4,3,'a2'],[31,6,2,1,'a3'],[25,15,14,3,'k'],[27,16,3,1,'a2'],[34,16,3,1,'a2'],[28,22,8,2,'g2']],
+ A11:FXS([[14,21,10,9,'o2'],[14,21,10,2,'o3'],[16,30,6,7,'g2'],[13,37,12,7,'g3'],[13,37,12,1,'g4'],[14,44,10,4,'g5'],[15,48,8,4,'g4'],[16,52,6,3,'g5'],[17,55,4,3,'g6'],[18,58,2,3,'g6'],[15,46,8,1,'g2'],[16,50,6,1,'g2'],[19,39,4,2,'a1']]),
+ L11:FXS([[18,42,14,6,'r2'],[18,42,14,1,'r3'],[9,47,21,15,'g2'],[9,47,21,2,'g3'],[10,50,19,1,'o1'],[10,54,19,1,'o1'],[10,58,19,1,'o1'],[8,52,2,6,'g3'],[12,61,15,2,'g4'],[22,44,2,1,'a2']]),
+ X15:[[39,12,15,10,'r2'],[39,12,15,2,'r3'],[52,9,6,9,'g3'],[52,9,6,1,'g4'],[54,11,3,5,'k'],[55,12,1,2,'a2'],[41,16,8,2,'a1'],[42,21,6,3,'g2']],
+ X16:FXS([[12,8,9,17,'o3'],[12,8,9,2,'o4'],[13,12,7,1,'o2'],[13,17,7,1,'o2'],[14,22,5,4,'o2'],[15,6,3,2,'g4']]),
  X13:FXS([[8,19,12,4,'g3'],[8,19,12,1,'g5'],[3,23,15,4,'g3'],[3,26,13,1,'g2'],[1,27,7,2,'g2'],[15,25,6,7,'g2'],[15,25,6,1,'g4'],[16,31,4,2,'a2'],[17,33,2,1,'a3',1]]),
 };
 function drawFX(ctx,id,f,flip,dy){const L=FX[id];if(!L)return;const fr=f%2;const X=(x,w)=>flip?65-x-w:x;
@@ -414,13 +433,16 @@ function drawArt(ctx,b,f,arena){
  [['SHOULDER','R'],['BACK','L']].forEach(([k,side])=>{const id=b[k];if(id&&(AKIND[id]==='L'||AKIND[id]==='R'))put(pimg(id,f),AKIND[id]!==side,id);});
 }
 // 機体の配色替え（ピクセルを読まずに合成モードで着色。file:// でも動く）
-const COLS={crimson:{n:'深紅',sw:'#b01e28'},bone:{n:'骨白',sw:'#d8cfb8'},blackgold:{n:'黒金',sw:'#c8a040',sw2:'#16140f'}};
+const COLS={crimson:{n:'深紅',sw:'#b01e28'},bone:{n:'骨白',sw:'#d8cfb8'},blackgold:{n:'黒金',sw:'#c8a040',sw2:'#16140f'},ochre:{n:'黄土',sw:'#c8902c',sw2:'#4a2a14'},verdigris:{n:'緑青',sw:'#4a9a84'},soot:{n:'煤黒',sw:'#9a8e84',sw2:'#d84a20'}};
 let RCT=null;
 function recolor(cv,col){if(!col||!COLS[col])return;const ctx=cv.getContext('2d');if(!RCT){RCT=document.createElement('canvas');RCT.width=64;RCT.height=64;}
  const t=RCT.getContext('2d');t.clearRect(0,0,64,64);t.drawImage(cv,0,0);ctx.save();
  if(col==='crimson'){ctx.globalCompositeOperation='color';ctx.globalAlpha=.8;ctx.fillStyle='#b8202c';ctx.fillRect(0,0,64,64);ctx.globalAlpha=1;}
  else if(col==='bone'){ctx.globalCompositeOperation='color';ctx.fillStyle='#cdbf9e';ctx.fillRect(0,0,64,64);ctx.globalCompositeOperation='screen';ctx.fillStyle='#3a3426';ctx.fillRect(0,0,64,64);}
  else if(col==='blackgold'){ctx.globalCompositeOperation='multiply';ctx.drawImage(RCT,0,0);ctx.globalCompositeOperation='color';ctx.fillStyle='#d0a030';ctx.fillRect(0,0,64,64);ctx.globalCompositeOperation='screen';ctx.fillStyle='#2a1f0a';ctx.fillRect(0,0,64,64);}
+ else if(col==='ochre'){ctx.globalCompositeOperation='color';ctx.globalAlpha=.85;ctx.fillStyle='#c48a2c';ctx.fillRect(0,0,64,64);ctx.globalAlpha=1;ctx.globalCompositeOperation='multiply';ctx.fillStyle='#e0c8a0';ctx.fillRect(0,0,64,64);}
+ else if(col==='verdigris'){ctx.globalCompositeOperation='color';ctx.globalAlpha=.75;ctx.fillStyle='#3c9a80';ctx.fillRect(0,0,64,64);ctx.globalAlpha=1;ctx.globalCompositeOperation='screen';ctx.fillStyle='#102018';ctx.fillRect(0,0,64,64);}
+ else if(col==='soot'){ctx.globalCompositeOperation='multiply';ctx.drawImage(RCT,0,0);ctx.drawImage(RCT,0,0);ctx.globalCompositeOperation='color';ctx.globalAlpha=.5;ctx.fillStyle='#a03018';ctx.fillRect(0,0,64,64);ctx.globalAlpha=1;}
  ctx.globalCompositeOperation='destination-in';ctx.drawImage(RCT,0,0);ctx.restore();}
 function draw(cv,b,f,arena,col){
  if(col){draw(cv,b,f,arena);recolor(cv,col);if(!arena){const c=cv.getContext('2d');c.fillStyle='#ffffff10';c.fillRect(4,60,56,3);}return;}
@@ -444,16 +466,16 @@ function render(){
  const bar=(l,v,mx,hi)=>`<span>${l}</span><div class="b"><i class="${hi?'hi':''}" style="width:${Math.max(0,Math.min(100,v/mx*100))}%"></i></div><span>${v}</span>`;
  $('bars').innerHTML=bar('装甲',s.arm,90)+bar('攻撃',s.atk,70)+bar('機動',s.mob,80)+bar('飛行',s.fly,70)+bar('積載率',Math.round(s.wt/Math.max(1,s.cap)*100),130,s.over>0);
  const L=G.last;$('report').innerHTML=L?`交戦相手：${L.en}<br>結果：<b style="color:${L.win?'#c9b98a':'#d0503a'}">${L.win?'任務完了':'任務失敗'}</b>／${L.turns}／残耐久 ${L.hp}<br>${L.note}`:'記録なし。まだ出撃していない。';
- const nr=nextRival();$('brief').innerHTML=`${curV()===0?'廃工場':'中央リーグ'} <b style="color:#e0b04a">${myRank()}位</b>／${ladFor(curV()).length}　会場：${VENUES[G.venue].n}<br>`+(nr?`次の相手：${rankOf(nr.id)}位 ${nr.p}／「${nr.m}」（${VENUES[nr.v].n}${nr.boss?'・門番':''}）${unlocked(nr.v)?'':' 🔒'}`:'<b style="color:#e0b04a">リーグ王者</b>。挑む者を待て。');
+ const nr=nextRival();$('brief').innerHTML=`${LN(curV())} <b style="color:#e0b04a">${myRank()}位</b>／${ladFor(curV()).length}　会場：${VENUES[G.venue].n}<br>`+(nr?`次の相手：${rankOf(nr.id)}位 ${nr.p}／「${nr.m}」（${VENUES[nr.v].n}${nr.boss?'・門番':''}）${unlocked(nr.v)?'':' 🔒'}`:'<b style="color:#e0b04a">リーグ王者</b>。挑む者を待て。');
  $('slots').innerHTML=SLOTS.map(([k,l])=>`<button data-slot="${k}" onclick="openPick('${k}')">${l}<small>${G.build[k]?P[G.build[k]].n:'— 空き —'}</small></button>`).join('');
 }
 function go(n,keep){const ov=$('resOv');if(ov)ov.classList.remove('on');document.querySelectorAll('.scr').forEach(e=>e.classList.remove('on'));$('s-'+n).classList.add('on');closePick();if(n==='sortie'&&!keep)newEnemy();if(n==='venue')renderVenue();if(n==='rank')renderRank();if(n==='shop'){SHSEL=null;$('shopMsg').textContent='';renderShop();}render();}
 function delta(a,b){return ['arm','atk','mob','fly','wt'].map(k=>{const d=b[k]-a[k];if(!d)return'';const good=k==='wt'?d<0:d>0;return `<span class="${good?'up':'dn'}">${STATN[k]}${d>0?'+':''}${d}</span>`}).filter(Boolean).join(' ')||'<span style="color:#7d7868">変化なし</span>';}
 let curSlot=null;
 // ---- 並べ替え・絞り込み（一覧ごとに保存）----
-const CAT={ARMS:{A1:'実弾',A3:'実弾',A4:'実弾',A8:'実弾',A10:'実弾',A2:'近接',A7:'近接',A5:'火炎・熱線',A9:'火炎・熱線',A6:'誘導弾'},
- ACC:{X7:'誘導弾',X6:'対空',X4:'砲',X3:'防御',X10:'防御',X14:'防御',X1:'飛行',X12:'飛行',X13:'飛行',X2:'機動',X11:'機動',X5:'支援',X8:'支援',X9:'支援'},
- LEGS:{L1:'二脚',L9:'二脚',L10:'二脚',L4:'逆関節',L5:'四脚',L6:'多脚',L2:'履帯',L8:'履帯',L7:'車輪',L3:'浮遊'}};
+const CAT={ARMS:{A1:'実弾',A3:'実弾',A4:'実弾',A8:'実弾',A10:'実弾',A2:'近接',A11:'近接',A7:'近接',A5:'火炎・熱線',A9:'火炎・熱線',A6:'誘導弾'},
+ ACC:{X7:'誘導弾',X6:'対空',X4:'砲',X3:'防御',X10:'防御',X14:'防御',X16:'防御',X15:'砲',X1:'飛行',X12:'飛行',X13:'飛行',X2:'機動',X11:'機動',X5:'支援',X8:'支援',X9:'支援'},
+ LEGS:{L1:'二脚',L9:'二脚',L10:'二脚',L4:'逆関節',L5:'四脚',L6:'多脚',L2:'履帯',L8:'履帯',L11:'履帯',L7:'車輪',L3:'浮遊'}};
 const CATS={ARMS:['実弾','近接','火炎・熱線','誘導弾'],ACC:['誘導弾','対空','砲','防御','飛行','機動','支援'],LEGS:['二脚','逆関節','四脚','多脚','履帯','車輪','浮遊']};
 const SORTK=[['n','名前'],['wt','重量'],['arm','装甲'],['atk','攻撃'],['mob','機動'],['fly','飛行']],SLN={BODY:'胴',HEAD:'頭',ARMS:'腕',LEGS:'脚',ACC:'装'};
 const catOf=id=>(CAT[P[id].s]||{})[id]||'';
@@ -507,9 +529,17 @@ const RIVALS=[ // sig＝この機体だけの部品（撃破で入手）
  {id:'r5',p:'ハヤテ',m:'雷鳥',v:2,lv:6.2,boss:1,sig:['X7','X12'],b:{BODY:'B3',HEAD:'H1',ARMS:'A1',LEGS:null,SHOULDER:'X7',BACK:'X12'}},
  {id:'r6',p:'ナギサ',m:'浮草',v:2,lv:6.4,sig:['H6','X9'],b:{BODY:'B1',HEAD:'H6',ARMS:'A3',LEGS:'L3',SHOULDER:'X9',BACK:'X1'}},
  {id:'r7',p:'ヒバリ',m:'カワセミ',v:2,lv:3.3,sig:['H8','X13'],b:{BODY:'B3',HEAD:'H8',ARMS:'A1',LEGS:'L3',SHOULDER:null,BACK:'X13'}},
- {id:'r8',p:'ガンテツ',m:'岩窟王',v:1,lv:6.0,boss:1,sig:['H7','X6'],b:{BODY:'B2',HEAD:'H7',ARMS:'A3',LEGS:'L2',SHOULDER:'X6',BACK:null}},
- {id:'r9',p:'サクヤ',m:'砂嵐',v:1,lv:2.8,sig:['A6','X8'],b:{BODY:'B2',HEAD:'H1',ARMS:'A6',LEGS:'L2',SHOULDER:'X8',BACK:null}},
- {id:'r10',p:'ダイモン',m:'石亀',v:1,lv:2.5,sig:['B4','L8'],b:{BODY:'B4',HEAD:'H2',ARMS:'A3',LEGS:'L8',SHOULDER:'X4',BACK:null}},
+ {id:'r8',p:'ガンテツ',m:'岩窟王',v:1,lv:7.0,sig:['H7','X6'],b:{BODY:'B2',HEAD:'H7',ARMS:'A3',LEGS:'L2',SHOULDER:'X6',BACK:null}},
+ {id:'r9',p:'サクヤ',m:'砂嵐',v:1,lv:4.3,sig:['A6','X8'],b:{BODY:'B2',HEAD:'H1',ARMS:'A6',LEGS:'L2',SHOULDER:'X8',BACK:null}},
+ {id:'r10',p:'ダイモン',m:'石亀',v:1,lv:3.5,sig:['B4','L8'],b:{BODY:'B4',HEAD:'H2',ARMS:'A3',LEGS:'L8',SHOULDER:'X4',BACK:null}},
+ {id:'s1',p:'ザンゲツ',m:'熱砂',v:1,lv:5.2,boss:1,col:'ochre',t:'砂漠の処刑人',intro:'砂は何でも飲み込む。お前の残骸もな。',sig:['L11'],b:{BODY:'B2',HEAD:'H10',ARMS:'A9',LEGS:'L11',SHOULDER:'X15',BACK:null}},
+ {id:'s2',p:'ロクショウ',m:'緑青',v:1,lv:5.6,col:'verdigris',t:'坑道の亡霊',intro:'坑道で迷った者は、皆まだ底にいる。',sig:['H10'],b:{BODY:'B5',HEAD:'H10',ARMS:'A6',LEGS:'L3',SHOULDER:null,BACK:'X8'}},
+ {id:'s3',p:'クロズミ',m:'炭塵',v:1,lv:4.3,col:'soot',t:'発破屋',intro:'吹き飛ぶ瞬間だけが、正直だ。',sig:['X15'],b:{BODY:'B9',HEAD:'H3',ARMS:'A11',LEGS:'L6',SHOULDER:'X15',BACK:null}},
+ {id:'s4',p:'ゲンブ',m:'鉱車',v:1,lv:4.6,sig:['B9'],b:{BODY:'B9',HEAD:'H7',ARMS:'A3',LEGS:'L8',SHOULDER:null,BACK:'X10'}},
+ {id:'s5',p:'サジン',m:'砂走り',v:1,lv:4.4,sig:['A11'],b:{BODY:'B6',HEAD:'H2',ARMS:'A11',LEGS:'L7',SHOULDER:null,BACK:'X11'}},
+ {id:'s6',p:'イシク',m:'落盤',v:1,lv:5.2,sig:['X16'],b:{BODY:'B4',HEAD:'H6',ARMS:'A7',LEGS:'L5',SHOULDER:null,BACK:'X16'}},
+ {id:'s7',p:'カガミ',m:'坑灯',v:1,lv:4.0,sig:['H11'],b:{BODY:'B3',HEAD:'H11',ARMS:'A8',LEGS:null,SHOULDER:null,BACK:'X1'}},
+ {id:'s8',p:'モグラ',m:'穴熊',v:1,lv:3.8,sig:[],b:{BODY:'B7',HEAD:'H1',ARMS:'A5',LEGS:'L6',SHOULDER:'X3',BACK:null}},
  {id:'w1',p:'クレナイ',m:'血錆',v:0,lv:3.7,boss:1,col:'crimson',t:'廃工場の赤鬼',intro:'この工場の錆は、俺が流させた血だ。',sig:['H9'],b:{BODY:'B1',HEAD:'H9',ARMS:'A1',LEGS:'L1',SHOULDER:'X4',BACK:null}},
  {id:'w2',p:'ハクロ',m:'骨灰',v:0,lv:6.2,col:'bone',t:'骨拾い',intro:'拾うのは、骨だけでいい。',sig:['L10'],b:{BODY:'B3',HEAD:'H1',ARMS:'A2',LEGS:'L10',SHOULDER:null,BACK:'X2'}},
  {id:'w3',p:'キンジ',m:'墨金',v:0,lv:4.2,col:'blackgold',t:'取り立て屋',intro:'利子は鉛で払ってもらう。',sig:['X14'],b:{BODY:'B2',HEAD:'H3',ARMS:'A3',LEGS:'L2',SHOULDER:null,BACK:'X14'}},
@@ -539,16 +569,24 @@ const RPROG={
  r12:{n:'籠城',d:'遮蔽物に籠もって撃つ。',rules:[{c:'hp50',a:'cover'},{c:'incov',a:'hold'},{c:'nolong',a:'advance'},{c:null,a:'cover'}]},
  r13:{n:'漁り屋',d:'弱った敵には突っ込み、自分が弱れば逃げる。',rules:[{c:'ehp30',a:'charge'},{c:'hp30',a:'retreat'},{c:'near',a:'strafeL'},{c:null,a:'advance'}]},
  r14:{n:'がむしゃら',d:'見えなければ近づき、あとは突っ込む。',rules:[{c:'nolos',a:'advance'},{c:null,a:'charge'}]},
+ s1:{n:'処刑',d:'砂上を横滑りしつつ熱線と発破。弱った獲物は逃がさない。',rules:[{c:'ehp30',a:'charge'},{c:'hp30',a:'cover'},{c:'nolos',a:'flank'},{c:'near',a:'retreat'},{c:'far',a:'advance'},{c:null,a:'strafeL'}]},
+ s2:{n:'亡霊',d:'漂って距離を保ち、煙幕に紛れて誘導弾。',rules:[{c:'near',a:'retreat'},{c:'hit',a:'evade'},{c:'eincov',a:'flank'},{c:'far',a:'advance'},{c:null,a:'orbit'}]},
+ s3:{n:'発破',d:'遮蔽物ごと乗り越え、削岩機で穿つ。',rules:[{c:'hp30',a:'charge'},{c:'nolos',a:'advance'},{c:'near',a:'hold'},{c:null,a:'charge'}]},
+ s4:{n:'鉱車',d:'鉄板を構えてゆっくり詰め、居座って撃つ。',rules:[{c:'efly',a:'hold'},{c:'nolos',a:'advance'},{c:'near',a:'hold'},{c:'incov',a:'hold'},{c:null,a:'advance'}]},
+ s5:{n:'砂走り',d:'車輪で周回し、隙を見て突っ込む。',rules:[{c:'hit',a:'orbit'},{c:'ehp50',a:'charge'},{c:'near',a:'pass'},{c:null,a:'orbit'}]},
+ s6:{n:'落盤',d:'遮蔽物に張り付き、寄ってきた敵を殴る。',rules:[{c:'near',a:'charge'},{c:'hp50',a:'cover'},{c:'incov',a:'hold'},{c:null,a:'cover'}]},
+ s7:{n:'坑灯',d:'上を飛び回り、撃たれたら避ける。',rules:[{c:'hit',a:'evade'},{c:'eincov',a:'flank'},{c:'near',a:'strafeR'},{c:null,a:'orbit'}]},
+ s8:{n:'穴熊',d:'盾を構えて潜り込み、炎で焼く。',rules:[{c:'nolos',a:'advance'},{c:null,a:'charge'}]},
 };
 RIVALS.forEach(r=>r.tac=r.id);
 const SIGOWN=Object.fromEntries(RIVALS.flatMap(r=>r.sig.map(id=>[id,r])));
 const maxVenue=()=>{let v=0;while(VENUES[v+1]&&unlocked(v+1))v++;return v;};
 // ---- 闇市（品書き）：入荷条件つきの固定価格 ----
 const BASIC=['B1','B3','H1','H2','A1','A2','L1','L3','X1','X2','X3','X5'];
-const MILE=[[7,['H3','A3']],[5,['B2','L2','X4']],[3,['H4']]]; // 廃工場の順位到達で入荷
+const MILE=[[7,['H3','A3'],0],[5,['B2','L2','X4'],0],[3,['H4'],0],[9,['H5'],1],[6,['A9','X9'],1],[3,['X12'],1]]; // 会場の順位到達で入荷（[順位,部品,会場]）
 function stockCond(id){ // null=入荷済み、文字列=入荷条件
  if(BASIC.includes(id))return null;
- const m=MILE.find(x=>x[1].includes(id));if(m)return myRank(0)<=m[0]||unlocked(1)?null:`廃工場${m[0]}位到達`;
+ const m=MILE.find(x=>x[1].includes(id));if(m)return myRank(m[2])<=m[0]||unlocked(m[2]+1)?null:`${LN(m[2])}${m[0]}位到達`;
  const r=SIGOWN[id];if(r)return G.beat.includes(r.id)||unlocked(r.v+1)?null:`「${r.m}」撃破`;
  return null;}
 const shopStock=()=>Object.keys(P).filter(id=>stockCond(id)===null);
@@ -561,7 +599,7 @@ function renderShop(){
  const rows=listApply('shop',st).map(id=>{const p=P[id],own=G.owned.includes(id),pr=price(id);
   return `<button class="shi${own?' own':''}${SHSEL===id?' eq':''}" data-shop="${id}" onclick="shopSel('${id}')"><span class="sl">${sl[p.s]}</span><span class="sn">${p.n}<small>${['arm','atk','mob','fly','cap'].filter(k=>p[k]).map(k=>STATN[k]+p[k]).join(' ')}</small></span><span class="sp">${own?'所持':pr+'cr'}</span></button>`;}).join('');
  const lk={};Object.keys(P).forEach(id=>{const c=stockCond(id);if(c)(lk[c]=lk[c]||[]).push(id);});
- const ord=c=>{const m=c.match(/廃工場(\d)位/);if(m)return 10-+m[1];const r=RIVALS.find(x=>c===`「${x.m}」撃破`);return r?(unlocked(r.v)?20:40)+(20-rankOf(r.id)):99;};
+ const ord=c=>{const m=c.match(/^(廃工場|採掘場)(\d+)位/);if(m)return m[1]==='廃工場'?10-+m[2]:25+(12-+m[2]);const r=RIVALS.find(x=>c===`「${x.m}」撃破`);return r?(unlocked(r.v)?20:40)+(20-rankOf(r.id)):99;};
  const hint=Object.entries(lk).sort((a,b)=>ord(a[0])-ord(b[0])).slice(0,3).map(([c,a])=>`あと${a.length}品：${c}で入荷`).join('<br>');
  $('shopInfo').innerHTML=`所持 ${G.cr}cr　入荷 ${st.length}品／全${Object.keys(P).length}品`+(hint?`<br><span style="color:#7d7868">${hint}</span>`:'');
  $('shopList').innerHTML=sbar('shop',true)+(rows||'<div class="warnTxt">該当する品なし</div>');
@@ -576,9 +614,9 @@ const shopPool=()=>Object.keys(P).filter(id=>!SIGOWN[id]||SIGOWN[id].v<maxVenue(
 
 const RIV=Object.fromEntries(RIVALS.map(r=>[r.id,r]));
 const bossOf=v=>RIVALS.find(r=>r.v===v&&r.boss);
-const unlocked=v=>v===0||G.beat.includes(bossOf(v-1).id)||(v===1&&!!G.legacy1);
+const unlocked=v=>v===0||G.beat.includes(bossOf(v-1).id)||(v===1&&(!!G.legacy1||!!G.legacy2))||(v===2&&!!G.legacy2);
 // 順位表：廃工場はローカル順位（G.lad0）、他の会場は従来の中央リーグ（G.ladder）。会場別化は廃工場で試験中
-const ladFor=v=>v===0?G.lad0:G.ladder,curV=()=>G.venue===0?0:1;
+const ladFor=v=>v===0?G.lad0:v===1?G.lad1:G.ladder,curV=()=>Math.min(G.venue,2),LN=v=>['廃工場','採掘場','中央リーグ'][Math.min(v,2)];
 const myRank=v=>ladFor(v??curV()).indexOf('YOU')+1;
 const rankOf=id=>ladFor(RIV[id].v).indexOf(id)+1;
 const canChallenge=id=>{const v=RIV[id].v,r=rankOf(id),m=myRank(v);return r<m&&r>=m-2&&unlocked(v);};
@@ -591,15 +629,15 @@ function renderVenue(){
 }
 function renderRank(){
  const v=curV(),L=ladFor(v),m=myRank(v);
- $('rankTitle').textContent=v===0?'廃工場 ローカル順位表':'中央リーグ 順位表';
- $('rankInfo').innerHTML=v===0?`現在 ${m}位／${L.length}　1位＝廃工場の頂点。倒せば「${VENUES[1].n}」へ`:`現在 ${m}位／${L.length}　会場：${VENUES[G.venue].n}<br><span style="color:#7d7868">※採掘場・水没市街・高層廃墟の会場別順位は準備中（現在は共通リーグ）</span>`;
+ $('rankTitle').textContent=v<2?`${VENUES[v].n} ローカル順位表`:'中央リーグ 順位表';
+ $('rankInfo').innerHTML=v<2?`現在 ${m}位／${L.length}　1位＝${VENUES[v].n}の頂点。倒せば「${VENUES[v+1].n}」へ`:`現在 ${m}位／${L.length}　会場：${VENUES[G.venue].n}<br><span style="color:#7d7868">※水没市街・高層廃墟の会場別順位は準備中（現在は共通リーグ）</span>`;
  $('rankList').innerHTML=L.map((id,i)=>{
   if(id==='YOU')return `<div class="rw me"><span class="rk">${i+1}位</span><span class="nm">★ あなた／「${calc(G.build).role}」</span></div>`;
   const r=RIV[id];let act='';
   if(canChallenge(id))act=r.v===G.venue?`<button class="pri" data-ch="${id}" onclick="challenge('${id}')">挑戦</button>`:`<span style="color:#7d7868">要移動:${VENUES[r.v].n}</span>`;
   else if(i+1<m&&!unlocked(r.v))act='<span style="color:#6a6558">🔒</span>';
   else if(i+1>m&&unlocked(r.v))act=r.v===G.venue?`<button data-re="${id}" onclick="challenge('${id}',1)">再戦</button>`:`<span style="color:#7d7868">要移動</span>`; // 追い抜いた相手：順位変動なしの再戦
-  return `<div class="rw"><span class="rk">${i+1}位</span><span class="nm">${r.col?`<span class="cs" style="${swS(r.col)}"></span>`:''}${r.p}／「${r.m}」${v===0?'':`<span style="color:#6a6558">・${VENUES[r.v].n}</span>`}${r.boss?`<span class="tag">${v===0?'頂点':'門番'}</span>`:''}${r.t?`<br><small style="color:${COLS[r.col].sw};font-size:11px">二つ名「${r.t}」</small>`:''}<br><small style="color:#7d7868;font-size:10px">${calc(r.b).role}／専用：${r.sig.map(k=>P[k].n.replace(/.*「(.*)」/,'$1')).join('・')}</small></span>${act}</div>`;}).join('');
+  return `<div class="rw"><span class="rk">${i+1}位</span><span class="nm">${r.col?`<span class="cs" style="${swS(r.col)}"></span>`:''}${r.p}／「${r.m}」${v<2?'':`<span style="color:#6a6558">・${VENUES[r.v].n}</span>`}${r.boss?`<span class="tag">${v<2?'頂点':'門番'}</span>`:''}${r.t?`<br><small style="color:${COLS[r.col].sw};font-size:11px">二つ名「${r.t}」</small>`:''}<br><small style="color:#7d7868;font-size:10px">${calc(r.b).role}${r.sig.length?'／専用：'+r.sig.map(k=>P[k].n.replace(/.*「(.*)」/,'$1')).join('・'):''}</small></span>${act}</div>`;}).join('');
 }
 const swS=c=>COLS[c]?`background:linear-gradient(135deg,${COLS[c].sw} 55%,${COLS[c].sw2||'#000'} 55%)`:'';
 function challenge(id,re){const r=RIV[id];EN={b:{...r.b},name:`${r.p}／「${r.m}」`,lv:r.lv,tac:r.tac,rival:id,col:r.col,re:!!re};go('sortie',true);showEnemy();}
@@ -621,7 +659,7 @@ function newEnemy(){
 }
 function showEnemy(){
  const b=EN.b,s=calc(b);
- $('sortieTitle').textContent=(EN.rival?(EN.re?`再戦（順位変動なし） ${RIV[EN.rival].m}`:`${RIV[EN.rival].v===0?'廃工場 順位戦':'リーグ戦'} ${rankOf(EN.rival)}位への挑戦`):'フリー出撃 ── 敵影捕捉')+'　＠'+VENUES[G.venue].n;
+ $('sortieTitle').textContent=(EN.rival?(EN.re?`再戦（順位変動なし） ${RIV[EN.rival].m}`:`${RIV[EN.rival].v<2?LN(RIV[EN.rival].v)+' 順位戦':'リーグ戦'} ${rankOf(EN.rival)}位への挑戦`):'フリー出撃 ── 敵影捕捉')+'　＠'+VENUES[G.venue].n;
  const rv=EN.rival&&RIV[EN.rival];$('enIntro').innerHTML=rv&&rv.intro?`<span class="cs" style="${swS(rv.col)}"></span><b>二つ名「${rv.t}」</b>　配色：${COLS[rv.col].n}<br><span class="q">${rv.p}「${rv.intro}」</span>`:'';$('enIntro').style.display=rv&&rv.intro?'':'none';
  $('btnReroll').style.display=EN.rival?'none':'';
  draw($('cvMe'),G.build);draw($('cvEn'),b,0,false,EN.col);
@@ -706,16 +744,16 @@ let BLOCKS=[[95,55,26,44],[239,201,26,44],[166,136,28,28],[70,215,46,18],[244,67
 function setArena(v){BLOCKS=VENUES[v].blocks;VCOL=VENUES[v].col;}
 const WPN={A10:{k:'gun',rng:125,cd:.34,sp:360,mul:.3,spr:.09,cl:.8},A1:{k:'gun',rng:170,cd:.6,sp:300,mul:.42,spr:.07},A3:{k:'gun',rng:125,cd:.17,sp:320,mul:.105,spr:.15,cl:.5,aa:.5},A2:{k:'blade',rng:95,cd:1.2,mul:1.7},none:{k:'gun',rng:110,cd:.9,sp:260,mul:.35,spr:.08},
  A4:{k:'gun',rng:230,cd:1.7,sp:520,mul:1.1,spr:.03,cl:0,aa:1.4},A5:{k:'gun',fl:1,rng:80,cd:.08,sp:170,mul:.16,spr:.22,cl:.3},A6:{k:'msl',rng:200,cd:1.6,sp:150,mul:.45,spr:.3,n:2,turn:2.6},
- A7:{k:'blade',rng:70,cd:1.8,mul:2.4},A8:{k:'gun',rng:115,cd:.11,sp:300,mul:.17,spr:.19,cl:.6},A9:{k:'gun',rng:175,cd:1.1,sp:800,mul:.75,spr:.035,aa:.8}};
+ A7:{k:'blade',rng:70,cd:1.8,mul:2.4},A11:{k:'blade',rng:80,cd:1.0,mul:1.3},A8:{k:'gun',rng:115,cd:.11,sp:300,mul:.17,spr:.19,cl:.6},A9:{k:'gun',rng:175,cd:1.1,sp:800,mul:.75,spr:.035,aa:.8}};
 const AUXN={can:'肩砲',flak:'対空砲',msl:'誘導弾'};
-const ACCEL={L1:6,L2:2.5,L3:1.3,L4:5,L5:3,L6:3.5,L7:2,L8:2,L9:5};
+const ACCEL={L1:6,L2:2.5,L3:1.3,L4:5,L5:3,L6:3.5,L7:2,L8:2,L9:5,L11:3.5};
 function rng32(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
 const inBlk=(x,y,pad=0)=>BLOCKS.some(([bx,by,bw,bh])=>x>bx-pad&&x<bx+bw+pad&&y>by-pad&&y<by+bh+pad);
 function losClear(a,b){const d=Math.hypot(b.x-a.x,b.y-a.y),n=Math.ceil(d/4);for(let i=1;i<n;i++){if(inBlk(a.x+(b.x-a.x)*i/n,a.y+(b.y-a.y)*i/n))return false;}return true;}
 const blkDist=(x,y)=>Math.min(...BLOCKS.map(([bx,by,bw,bh])=>Math.hypot(Math.max(bx-x,0,x-bx-bw),Math.max(by-y,0,y-by-bh))));
 function mkUnit(st,b,tac,x,y,nm){
  const w0=WPN[b.ARMS]||WPN.none,w=b.HEAD&&P[b.HEAD].scope?{...w0,rng:w0.rng*1.2}:w0,ac=[b.SHOULDER,b.BACK],has=id=>ac.includes(id);
- const can=has('X4'),aux=[];if(can)aux.push('can');if(has('X6'))aux.push('flak');if(has('X7'))aux.push('msl');
+ const can=has('X4')||has('X15'),aux=[];if(can)aux.push('can');if(has('X6'))aux.push('flak');if(has('X7'))aux.push('msl');
  const ground=!b.LEGS&&!st.canFly,jets=has('X13')&&st.canFly;
  return{nm,b,tac,x,y,vx:0,vy:0,hp:st.hp,cur:st.hp,arm:st.arm,fly:st.canFly,w,can,aux,cdA:{can:1.5,flak:.5,msl:2},
   atk:Math.max(8,st.atk-(can?18:0)-(has('X6')?6:0)-(has('X7')?10:0)),spd:ground?0:Math.max(14,Math.min(jets?122:110,(28+st.mob*1.1)*(st.canFly?FSPD*(jets?1.12:1):1))),
@@ -884,13 +922,13 @@ function fight(){
    else{G.loss++;G.cr+=15;res='■ 再戦敗北　回収手当 15cr';}
   }else if(win){
    G.wins++;const LL=ladFor(r.v),mi=LL.indexOf('YOU');LL[mi]=r.id;LL[rr-1]='YOU';
-   const c=r.v===0?70+(10-rr)*10:130+(11-rr)*12;G.cr+=c;res=`■ 勝利　${rr}位に昇格　報酬 ${c}cr`;
+   const c=r.v===0?70+(10-rr)*10:r.v===1?110+(12-rr)*11:130+(11-rr)*12;G.cr+=c;res=`■ 勝利　${rr}位に昇格　報酬 ${c}cr`;
    const first=!G.beat.includes(r.id),sg=r.sig.filter(k=>!G.owned.includes(k));
    if(first&&sg.length){(r.boss?sg:sg.slice(0,1)).forEach(n=>{G.owned.push(n);res+=`／獲得：${P[n].n}`;});} // 初撃破：専用部品（門番は2つ）
    else{const sg2=sg.length?sg:shopStock().filter(k=>!G.owned.includes(k));if(sg2.length&&Math.random()<.3){const n=pick(sg2);G.owned.push(n);res+=`／獲得：${P[n].n}`;}}
    if(!G.beat.includes(r.id))G.beat.push(r.id);
    if(r.boss&&VENUES[r.v+1])res+=`／会場「${VENUES[r.v+1].n}」解放`;
-   if(rr===1)res+=r.v===0?'／廃工場の頂点':'／リーグ王者';
+   if(rr===1)res+=r.v<2?`／${VENUES[r.v].n}の頂点`:'／リーグ王者';
   }else{G.loss++;G.cr+=20;res='■ 敗北　順位変動なし　回収手当 20cr';}
  }else if(win){
   G.wins++;const c=Math.round(45+Math.random()*35+EN.lv*10);G.cr+=c;
@@ -901,7 +939,7 @@ function fight(){
  G.last={en:EN.name,win,turns:H.end.toFixed(1)+'秒',hp:Math.ceil(H.me.cur)+'/'+H.me.hp,note:res.replace('■ ','')+'（方針：'+progOf(G.tac).n+'）'};save();
  go('battle');$('bEn').textContent=EN.name;$('btnBack').disabled=true;$('btnSkip').disabled=false;
  SPRC=[mechCanvas(G.build),mechCanvas(EN.b,EN.col)];
- const [m,e]=buildUnits();SIM=makeSim(seed,m,e);SIM.res=res;SIM.lg=!!EN.rival&&!EN.re;SIM.lgv=EN.rival?(RIV[EN.rival].v===0?0:1):0;SPEED=1;$('btnSpd').textContent='2倍速';
+ const [m,e]=buildUnits();SIM=makeSim(seed,m,e);SIM.res=res;SIM.lg=!!EN.rival&&!EN.re;SIM.lgv=EN.rival?Math.min(RIV[EN.rival].v,2):0;SPEED=1;$('btnSpd').textContent='2倍速';
  log0(`>> 交戦開始　自機【${progOf(m.tac).n}】／${e.nm}【${progOf(e.tac).n}】`);{const rv=EN.rival&&RIV[EN.rival];if(rv&&rv.intro)log0(`${rv.p}「${rv.intro}」`);}
  acc=0;lastT=performance.now();requestAnimationFrame(loop);
 }
@@ -910,7 +948,7 @@ function finish(){
  busy=false;$('btnBack').disabled=false;$('btnSkip').disabled=true;
  try{drawArena(SIM);render();}catch(e){console.warn(e);}
  // 画面の高さに関係なく必ず見える結果パネル（帰投／順位表）
- $('resTxt').innerHTML=(SIM&&SIM.res||'')+(SIM&&SIM.lg?`<br><span style="color:#a39c88;font-weight:normal">現在 ${SIM.lgv===0?'廃工場':'中央リーグ'} ${myRank(SIM.lgv)}位</span>`:'');
+ $('resTxt').innerHTML=(SIM&&SIM.res||'')+(SIM&&SIM.lg?`<br><span style="color:#a39c88;font-weight:normal">現在 ${LN(SIM.lgv)} ${myRank(SIM.lgv)}位</span>`:'');
  $('btnOvRank').style.display=SIM&&SIM.lg?'':'none';$('resOv').classList.add('on');
 }
 function exitBattle(){ // 戦闘中でも退出可：結果は開始時に確定済みなので最後まで進めて結果パネルを出す
